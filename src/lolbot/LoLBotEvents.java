@@ -22,15 +22,15 @@ public class LoLBotEvents {
     
     LoLBotApi lolApi;
     
-    public LoLBotEvents(String rApiKey) {
-        lolApi = new LoLBotApi(rApiKey);
+    public LoLBotEvents() {
+        lolApi = new LoLBotApi();
     }
     
     @EventSubscriber
     public void onReady(ReadyEvent e) {
         System.out.println("Bot Ready.");
-        e.getClient().online("Not Connected");
-        //bot.online("League of Legends Dev API");
+        //e.getClient().online("Not Connected");
+        e.getClient().online("League of Legends Dev API");
     }
     
     @EventSubscriber

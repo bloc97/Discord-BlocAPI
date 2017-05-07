@@ -5,11 +5,11 @@
  */
 package dbot;
 
-import java.util.Map;
-import net.rithms.riot.api.RiotApi;
-import net.rithms.riot.api.RiotApiException;
-import net.rithms.riot.constant.Region;
-import net.rithms.riot.dto.Summoner.Summoner;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import lolbot.LoLBotEvents;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
@@ -23,17 +23,16 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        String dApiKey = args[0];
-        String rApiKey = args[1];
-        System.out.println(dApiKey);
-        System.out.println(rApiKey);
+    public static void main(String[] args) throws IOException {
+        Path path = FileSystems.getDefault().getPath("dapi.key");
+        String dApiKey = new String(Files.readAllLines(path).get(0));
         
+        System.out.println("Discord Bot API Key: " + dApiKey);
         
         IDiscordClient bot = createClient(dApiKey, true);
         
         EventDispatcher botDispatcher = bot.getDispatcher();
-        botDispatcher.registerListener(new DiscordEvents());
+        botDispatcher.registerListener(new LoLBotEvents());
         
         
         
