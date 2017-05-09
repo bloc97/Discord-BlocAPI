@@ -27,15 +27,12 @@ public class Levenshtein {
     public static int substringDistance(String longString, String shortString) { //Use this to weight in favour of a substring
         //Eg "Auto" will be closer to "Automobile" than "Audi" if used with Math.min(Levenstehin, substringDistance)
         if (longString.startsWith(shortString)) {
-            int length = shortString.length();
-            return (longString.length() - shortString.length())/4;
+            final int longLength = longString.length();
+            final int shortLength = shortString.length();
+            return (int)Math.sqrt(longLength - shortLength);
+            //return (longString.length() - shortString.length())/4;
         }
-        return Integer.MAX_VALUE;
-    }
-
-    public static void main(String [] args) {
-        String [] data = { "kitten", "sitting", "saturday", "sunday", "rosettacode", "raisethysword" };
-        for (int i = 0; i < data.length; i += 2)
-            System.out.println("distance(" + data[i] + ", " + data[i+1] + ") = " + distance(data[i], data[i+1]));
+        return distance(longString, shortString);
+        //return Integer.MAX_VALUE;
     }
 }

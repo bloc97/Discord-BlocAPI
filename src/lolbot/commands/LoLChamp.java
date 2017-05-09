@@ -48,7 +48,7 @@ public class LoLChamp extends LoLCommand {
         for (Map.Entry<String, Champion> championEntry : championList.getData().entrySet()) {
             finalString += championEntry.getValue().getName() + " " + championEntry.getKey() + " ";
         }*/
-        e.getMessage().reply(champion.getName() + " " + champion.getTitle());
+        e.getMessage().reply(champion.getName() + " " + champion.getTitle() + " " + champion.getLore());
         return true;
     }
     
