@@ -5,10 +5,10 @@
  */
 package lolbot;
 
-import helpers.Command;
+import dbot.UserCommand;
 import helpers.MapSort;
-import helpers.TextFormatter;
 import static helpers.TextFormatter.formatCapitalUnderscore;
+import static helpers.TextFormatter.formatNounOutput;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -23,6 +23,9 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import lolbot.LoLCommand.LoLCommandType;
+import lolbot.commands.LoLChamp;
+import lolbot.commands.LoLGet;
 import net.rithms.riot.api.ApiConfig;
 import net.rithms.riot.api.RiotApi;
 import net.rithms.riot.api.RiotApiException;
@@ -43,26 +46,57 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
  * @author bowen
  */
 public class LoLBotApi {
-    public static Platform platform = Platform.NA;
     
-    private RiotApi rApi, rApiK;
+    private RiotDatabase rDb;
+    private LinkedList<LoLCommand> commandList;
+    //Prophet bot (sees the future)
     
     public LoLBotApi() {
-        Path path = FileSystems.getDefault().getPath("rapi.key");
-        String rApiKey = "";
-        try {
-            rApiKey = new String(Files.readAllLines(path).get(0));
-        } catch (IOException ex) {
-            Logger.getLogger(LoLBotApi.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println("Riot API Key: " + rApiKey);
-        ApiConfig config = new ApiConfig();
-        config.setKey(rApiKey);
-        rApi = new RiotApi();
-        rApiK = new RiotApi(config);
+        rDb = new RiotDatabase(Platform.NA);
+        commandList = new LinkedList<>();
+        commandList.add(new LoLGet());
+        commandList.add(new LoLChamp());
     }
     
-    public void parseMessage(MessageReceivedEvent e, Command c) throws RiotApiException {
+    public LoLCommandType getType(String verb) {
+        for (LoLCommand lc : commandList) {
+            if (lc.isTrigger(verb)) {
+                return lc.getType();
+            }
+        }
+        return LoLCommandType.NULL;
+    }
+    
+    public void parseMessage(MessageReceivedEvent e, UserCommand c) {
+        String verb = c.get();
+        
+        switch (getType(verb)) {
+            case SEARCHSUMMONERNAME:
+                String nameSearch = c.getNext();
+                if (!rDb.summonerNameExists(nameSearch)) {
+                    e.getMessage().reply("Sorry, Summoner *" + formatNounOutput(nameSearch) + "* cound not be found.", null);
+                    return;
+                }
+                break;
+            case NULL:
+                break;
+            
+        }
+        
+        c.next();
+        for (LoLCommand command : commandList) {
+            if (command.isTrigger(verb)) {
+                command.trigger(e, c, rDb);
+                break;
+            }
+        }
+        
+    }
+    
+    
+    
+    /*
+    public void parseMessage(MessageReceivedEvent e, UserCommand c) throws RiotApiException {
         String cs = c.get();
         String nameSearch = c.getNext();
         if (cs.isEmpty() || nameSearch.isEmpty()) {
@@ -179,12 +213,12 @@ public class LoLBotApi {
     }
     
     public String getLeagues(Set<LeaguePosition> lps) {
+        if (lps.size() < 1) {
+            return "None";
+        }
         String leaguePositions = "";
         for (LeaguePosition lp : lps) {
             leaguePositions = leaguePositions + formatCapitalUnderscore(lp.getQueueType()) + ": " + lp.getTier() + " " + lp.getRank() + "\n";// + " (" + lp.getLeagueName() + ")";
-        }
-        if (leaguePositions.length() < 1) {
-            return "None";
         }
         return leaguePositions;
     }
@@ -290,5 +324,5 @@ public class LoLBotApi {
         System.out.println(summoner.getProfileIconId());
         System.out.println(summoner.getRevisionDate());
         System.out.println(summoner.getSummonerLevel());
-    }
+    }*/
 }

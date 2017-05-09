@@ -3,33 +3,43 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package helpers;
+package dbot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
  * @author bowen
  */
-public class Command {
+public class UserCommand {
     private int currentIndex;
     private final ArrayList<String> content;
-    private static final char SYMBOL = '!';
+    private final char symbol;
+    private static final List<Character> TRIGGERSYMBOLS = Arrays.asList('!', '$', '%', '&', '~', '\\');
     
-    public Command(String command) {
-        LinkedList<String> parsedCommand = new LinkedList<>();
+    public UserCommand(String command) {
+        currentIndex = 0;
         
-        //System.out.println(command);
-        if (command.charAt(0) != SYMBOL) {
-            currentIndex = 0;
+        if (command.isEmpty()) {
             content = new ArrayList<>();
+            symbol = 0;
             return;
         }
-        command = command.substring(1);
+        if (TRIGGERSYMBOLS.contains(command.charAt(0))) {
+            symbol = command.charAt(0);
+            command = command.substring(1);
+        } else {
+            content = new ArrayList<>();
+            symbol = 0;
+            return;
+        }
         
         //System.out.println(command);
+        
+        LinkedList<String> parsedCommand = new LinkedList<>();
         
         String currentString = "";
         boolean isInQuotes = false;
@@ -101,5 +111,11 @@ public class Command {
     }
     public void next() {
         currentIndex++;
+    }
+    public char getSymbol() {
+        return symbol;
+    }
+    public String getSymbolAsString() {
+        return "" + symbol;
     }
 }

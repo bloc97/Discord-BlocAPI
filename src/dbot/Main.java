@@ -34,8 +34,6 @@ public class Main {
         EventDispatcher botDispatcher = bot.getDispatcher();
         botDispatcher.registerListener(new LoLBotEvents());
         
-        
-        
     }
     
     public static IDiscordClient createClient(String token, boolean login) { // Returns a new instance of the Discord client

@@ -5,7 +5,6 @@
  */
 package dbot;
 
-import helpers.Command;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -36,7 +35,7 @@ public class DiscordEvents {
             return;
         }
         
-        Command command = new Command(message.getContent());
+        UserCommand command = new UserCommand(message.getContent());
         
     }
     

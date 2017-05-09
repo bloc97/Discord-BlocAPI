@@ -5,7 +5,7 @@
  */
 package lolbot;
 
-import helpers.Command;
+import dbot.UserCommand;
 import net.rithms.riot.api.RiotApiException;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
@@ -43,16 +43,12 @@ public class LoLBotEvents {
             return;
         }
         
-        Command command = new Command(message.getContent());
-        try {
-            if (command.get().equals("lol")) {
-                command.next();
-                lolApi.parseMessage(e, command);
-            } else if (channel.getName().equals("leagueoflegends")) {
-                lolApi.parseMessage(e, command);
-            }
-        } catch (RiotApiException ex) {
-            System.out.println(ex);
+        UserCommand command = new UserCommand(message.getContent());
+        if (command.get().equals("lol")) {
+            command.next();
+            lolApi.parseMessage(e, command);
+        } else if (channel.getName().equals("leagueoflegends")) {
+            lolApi.parseMessage(e, command);
         }
         
     }

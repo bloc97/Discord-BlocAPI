@@ -24,4 +24,32 @@ public abstract class TextFormatter {
         }
         return string;
     }
+    public static String formatInput(String s) {
+        char[] cArr = s.toCharArray();
+        String formattedString = "";
+        for (int i=0; i<cArr.length; i++) {
+            if (isTextASCII(cArr[i])) {
+                formattedString += cArr[i];
+            }
+        }
+        return formattedString;
+    }
+    
+    public static boolean isTextASCII(char c) {
+        return (c == 10 || c == 12 || c == 13 || (c >= 32 && c <= 126));
+        //10, '\n' newline
+        //12, '\f' newpage
+        //13, '\r' return to beginning of line
+    }
+    
+    public static String formatNounOutput(String s) { //Formats a unformatted noun for output (capitalize first letter)
+        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+    }
+    
+    public static String formatOutput(String s) {
+        if (s.isEmpty()) {
+            return "None";
+        }
+        return s;
+    }
 }
