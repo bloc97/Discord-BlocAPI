@@ -6,39 +6,20 @@
 package lolbot;
 
 import dbot.UserCommand;
-import helpers.MapSort;
-import static helpers.TextFormatter.formatCapitalUnderscore;
 import static helpers.TextFormatter.formatNounOutput;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lolbot.LoLCommand.LoLCommandType;
 import lolbot.commands.LoLChamp;
-import lolbot.commands.LoLGet;
-import net.rithms.riot.api.ApiConfig;
-import net.rithms.riot.api.RiotApi;
-import net.rithms.riot.api.RiotApiException;
-import net.rithms.riot.api.endpoints.league.dto.LeaguePosition;
-import net.rithms.riot.api.endpoints.match.dto.MatchList;
-import net.rithms.riot.api.endpoints.match.dto.MatchReference;
-import net.rithms.riot.api.endpoints.spectator.dto.CurrentGameInfo;
-import net.rithms.riot.api.endpoints.spectator.dto.CurrentGameParticipant;
-import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
+import lolbot.commands.SummonerInfo;
+import lolbot.commands.SummonerExtendedInfo;
+import net.bloc97.riot.cache.CachedRiotApi;
 import net.rithms.riot.constant.Platform;
-import sx.blah.discord.api.internal.json.objects.EmbedObject;
-import sx.blah.discord.api.internal.json.objects.EmbedObject.EmbedFieldObject;
-import sx.blah.discord.api.internal.json.objects.EmbedObject.FooterObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 /**
@@ -47,15 +28,26 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
  */
 public class LoLBotApi {
     
-    private RiotDatabase rDb;
+    private CachedRiotApi rApi;
     private LinkedList<LoLCommand> commandList;
     //Prophet bot (sees the future)
     
     public LoLBotApi() {
-        rDb = new RiotDatabase(Platform.NA);
+        
+        Path path = FileSystems.getDefault().getPath("rapi.key");
+        String rApiKey = "";
+        try {
+            rApiKey = Files.readAllLines(path).get(0);
+        } catch (IOException ex) {
+            Logger.getLogger(LoLBotApi.class.getName()).log(Level.SEVERE, null, ex);
+            throw new IllegalStateException("No valid API key!");
+        }
+        
+        rApi = new CachedRiotApi(rApiKey, Platform.NA);
         commandList = new LinkedList<>();
-        commandList.add(new LoLGet());
+        commandList.add(new SummonerInfo());
         commandList.add(new LoLChamp());
+        commandList.add(new SummonerExtendedInfo());
     }
     
     public LoLCommandType getType(String verb) {
@@ -73,7 +65,7 @@ public class LoLBotApi {
         switch (getType(verb)) {
             case SEARCHSUMMONERNAME:
                 String nameSearch = c.getNext();
-                if (!rDb.summonerNameExists(nameSearch)) {
+                if (!rApi.Summoner.summonerNameExists(nameSearch)) {
                     e.getMessage().reply("Sorry, Summoner *" + formatNounOutput(nameSearch) + "* cound not be found.", null);
                     return;
                 }
@@ -86,7 +78,7 @@ public class LoLBotApi {
         c.next();
         for (LoLCommand command : commandList) {
             if (command.isTrigger(verb)) {
-                command.trigger(e, c, rDb);
+                command.trigger(e, c, rApi);
                 break;
             }
         }

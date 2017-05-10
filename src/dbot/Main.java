@@ -22,10 +22,11 @@ import sx.blah.discord.util.DiscordException;
 public class Main {
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
         Path path = FileSystems.getDefault().getPath("dapi.key");
-        String dApiKey = new String(Files.readAllLines(path).get(0));
+        String dApiKey = Files.readAllLines(path).get(0);
         
         System.out.println("Discord Bot API Key: " + dApiKey);
         

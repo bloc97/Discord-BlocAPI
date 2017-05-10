@@ -5,6 +5,12 @@
  */
 package helpers;
 
+import java.util.Date;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
+import sx.blah.discord.api.internal.json.objects.EmbedObject.FooterObject;
+import sx.blah.discord.handle.impl.obj.Embed;
+import sx.blah.discord.handle.impl.obj.Embed.EmbedFooter;
+
 /**
  *
  * @author bowen
@@ -52,4 +58,8 @@ public abstract class TextFormatter {
         }
         return s;
     }
+    public static FooterObject getSummonerEmbedFooter(long summonerId, long accountId, long lastDate) {
+        return new FooterObject(summonerId + " | " + accountId + "\u2003\u2003" + "Last Activity: " + new Date(lastDate).toString(), "", "");
+    }
+    
 }

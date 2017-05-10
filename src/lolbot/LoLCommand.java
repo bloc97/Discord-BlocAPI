@@ -7,6 +7,9 @@ package lolbot;
 
 import dbot.Command;
 import dbot.UserCommand;
+import java.util.Arrays;
+import java.util.List;
+import net.bloc97.riot.cache.CachedRiotApi;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 /**
@@ -17,10 +20,10 @@ public abstract class LoLCommand implements Command {
     public enum LoLCommandType {
         NULL, SEARCHSUMMONERNAME
     }
-    public final String triggerVerb;
+    public final List<String> triggerVerbs;
     public final LoLCommandType type;
-    public LoLCommand(String triggerVerb, LoLCommandType type) {
-        this.triggerVerb = triggerVerb;
+    public LoLCommand(LoLCommandType type, String... triggerVerbs) {
+        this.triggerVerbs = Arrays.asList(triggerVerbs);
         this.type = type;
     }
     public LoLCommandType getType() {
@@ -28,11 +31,11 @@ public abstract class LoLCommand implements Command {
     }
     @Override
     public boolean isTrigger(String verb) {
-        return (triggerVerb.equals(verb));
+        return (triggerVerbs.contains(verb));
     }
     @Override
     public final boolean trigger(MessageReceivedEvent e, UserCommand c) {
         throw new IllegalStateException("Cannot parse command without RiotApi object.");
     }
-    public abstract boolean trigger(MessageReceivedEvent e, UserCommand c, RiotDatabase db);
+    public abstract boolean trigger(MessageReceivedEvent e, UserCommand c, CachedRiotApi db);
 }
