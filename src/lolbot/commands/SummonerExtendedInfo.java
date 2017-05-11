@@ -38,6 +38,7 @@ public class SummonerExtendedInfo extends LoLCommand {
         
         c.next();
         EmbedObject embed = new EmbedObject();
+        embed.color = 6732543;
         String profileUrl = "http://matchhistory.na.leagueoflegends.com/en/#match-history/NA1/" + summoner.getAccountId();
         String profilePicUrl = "http://ddragon.leagueoflegends.com/cdn/" + api.StaticData.getDataLatestVersion() + "/img/profileicon/" + summoner.getProfileIconId() + ".png";
         embed.author = new EmbedObject.AuthorObject(summoner.getName(), profileUrl, "", "");
@@ -60,7 +61,7 @@ public class SummonerExtendedInfo extends LoLCommand {
         fieldList.add(new EmbedFieldObject("(Ranked): ", getPreferredLane(mr, 2), true));
 
         embed.fields = fieldList.toArray(new EmbedFieldObject[0]);
-        e.getMessage().reply("", embed);
+        e.getMessage().getChannel().sendMessage(embed);
         return true;
     }
     public String getMostUsedChampions(CachedRiotApi api, List<MatchReference> mr, int n) {

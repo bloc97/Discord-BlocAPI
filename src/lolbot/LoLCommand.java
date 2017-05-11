@@ -18,7 +18,7 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
  */
 public abstract class LoLCommand implements Command {
     public enum LoLCommandType {
-        NULL, SEARCHSUMMONERNAME
+        NULL, SEARCHSUMMONERNAME, SEARCHCHAMPIONNAME, SEARCHITEMNAME
     }
     public final List<String> triggerVerbs;
     public final LoLCommandType type;

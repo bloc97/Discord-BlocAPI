@@ -33,7 +33,7 @@ public class Main {
         IDiscordClient bot = createClient(dApiKey, true);
         
         EventDispatcher botDispatcher = bot.getDispatcher();
-        botDispatcher.registerListener(new LoLBotEvents());
+        botDispatcher.registerListener(new LoLBotEvents(bot));
         
     }
     

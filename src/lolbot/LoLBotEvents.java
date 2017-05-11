@@ -7,6 +7,7 @@ package lolbot;
 
 import dbot.UserCommand;
 import net.rithms.riot.api.RiotApiException;
+import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -22,15 +23,15 @@ public class LoLBotEvents {
     
     LoLBotApi lolApi;
     
-    public LoLBotEvents() {
-        lolApi = new LoLBotApi();
+    public LoLBotEvents(IDiscordClient client) {
+        lolApi = new LoLBotApi(client);
     }
     
     @EventSubscriber
     public void onReady(ReadyEvent e) {
         System.out.println("Bot Ready.");
         //e.getClient().online("Not Connected");
-        e.getClient().online("League of Legends Dev API");
+        e.getClient().online("Advanced Bot");
     }
     
     @EventSubscriber

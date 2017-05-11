@@ -5,6 +5,7 @@
  */
 package lolbot;
 
+import com.vdurmont.emoji.Emoji;
 import dbot.UserCommand;
 import static helpers.TextFormatter.formatNounOutput;
 import java.io.IOException;
@@ -12,15 +13,28 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lolbot.LoLCommand.LoLCommandType;
-import lolbot.commands.LoLChamp;
+import lolbot.commands.ChampionInfo;
+import lolbot.commands.Help;
+import lolbot.commands.ItemInfo;
 import lolbot.commands.SummonerInfo;
 import lolbot.commands.SummonerExtendedInfo;
+import lolbot.commands.SummonerMatchHistory;
 import net.bloc97.riot.cache.CachedRiotApi;
 import net.rithms.riot.constant.Platform;
+import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.internal.ShardImpl;
+import sx.blah.discord.api.internal.json.objects.EmojiObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.obj.EmojiImpl;
+import sx.blah.discord.handle.impl.obj.Reaction;
+import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IReaction;
+import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.RateLimitException;
 
 /**
  *
@@ -30,9 +44,10 @@ public class LoLBotApi {
     
     private CachedRiotApi rApi;
     private LinkedList<LoLCommand> commandList;
+    private IDiscordClient client;
     //Prophet bot (sees the future)
     
-    public LoLBotApi() {
+    public LoLBotApi(IDiscordClient client) {
         
         Path path = FileSystems.getDefault().getPath("rapi.key");
         String rApiKey = "";
@@ -44,10 +59,14 @@ public class LoLBotApi {
         }
         
         rApi = new CachedRiotApi(rApiKey, Platform.NA);
+        this.client = client;
         commandList = new LinkedList<>();
         commandList.add(new SummonerInfo());
-        commandList.add(new LoLChamp());
+        commandList.add(new ChampionInfo());
+        commandList.add(new ItemInfo());
         commandList.add(new SummonerExtendedInfo());
+        commandList.add(new SummonerMatchHistory());
+        commandList.add(new Help());
     }
     
     public LoLCommandType getType(String verb) {
@@ -60,13 +79,18 @@ public class LoLBotApi {
     }
     
     public void parseMessage(MessageReceivedEvent e, UserCommand c) {
+        IMessage m = e.getMessage();
         String verb = c.get();
+        LoLCommandType type = getType(verb);
+        if (type != LoLCommandType.NULL) {
+            m.addReaction(":hammer_and_wrench:");
+        }
         
-        switch (getType(verb)) {
+        switch (type) {
             case SEARCHSUMMONERNAME:
                 String nameSearch = c.getNext();
                 if (!rApi.Summoner.summonerNameExists(nameSearch)) {
-                    e.getMessage().reply("Sorry, Summoner *" + formatNounOutput(nameSearch) + "* cound not be found.", null);
+                    m.reply("Sorry, Summoner *" + formatNounOutput(nameSearch) + "* cound not be found.", null);
                     return;
                 }
                 break;
@@ -78,8 +102,27 @@ public class LoLBotApi {
         c.next();
         for (LoLCommand command : commandList) {
             if (command.isTrigger(verb)) {
-                command.trigger(e, c, rApi);
+                try {
+                    command.trigger(e, c, rApi);
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
                 break;
+            }
+        }
+        List<IReaction> reactions = m.getReactions();
+        for (IReaction reaction : reactions) {
+            if (reaction.getClient().equals(client)) {
+                try {
+                    m.removeReaction(reaction);
+                } catch (RateLimitException ex) {
+                    try {
+                        Thread.sleep(ex.getRetryDelay()+100);
+                    } catch (InterruptedException iex) {
+                        Logger.getLogger(LoLBotApi.class.getName()).log(Level.SEVERE, null, iex);
+                    }
+                    m.removeReaction(reaction);
+                }
             }
         }
         

@@ -37,6 +37,7 @@ public class SummonerInfo extends LoLCommand {
         
         c.next();
         EmbedObject embed = new EmbedObject();
+        embed.color = 6732543;
         String profileUrl = "http://matchhistory.na.leagueoflegends.com/en/#match-history/NA1/" + summoner.getAccountId();
         String profilePicUrl = "http://ddragon.leagueoflegends.com/cdn/" + api.StaticData.getDataLatestVersion() + "/img/profileicon/" + summoner.getProfileIconId() + ".png";
         embed.author = new EmbedObject.AuthorObject(summoner.getName(), profileUrl, "", "");
@@ -52,25 +53,43 @@ public class SummonerInfo extends LoLCommand {
         //fieldList.add(new EmbedObject.EmbedFieldObject("Level: ", "" + summoner.getSummonerLevel(), true));
         
         embed.fields = fieldList.toArray(new EmbedObject.EmbedFieldObject[0]);
-        e.getMessage().getChannel().sendMessage("", embed);
+        e.getMessage().getChannel().sendMessage(embed);
         return true;
     }
     
     public static String getTopChampions(CachedRiotApi api, long id, int n) {
         //List<ChampionMastery> cms = api.ChampionMastery.getChampionMasteriesBySummoner(id);
         List<ChampionMastery> cms = api.ChampionMastery.getChampionMasteriesBySummoner(id);
-        api.ChampionMastery.sortChampionMasteries(cms, ChampionMasteryDatabase.CompareMethod.POINTS, true);
+        api.ChampionMastery.sortChampionMasteries(cms, ChampionMasteryDatabase.CompareMethod.LEVEL, false);
         if (cms == null || cms.size() < 1) {
             return "None";
         }
         String topChampions = "";
         int i = 0;
         for (ChampionMastery cm : cms) {
-            topChampions = topChampions + "**[" + cm.getChampionLevel() + "]** " + api.StaticData.getDataChampion(cm.getChampionId()).getName() + ": " + cm.getChampionPoints() + "\n";
-            i++;
             if (i >= n) {
                 break;
             }
+            topChampions = topChampions + "**[" + cm.getChampionLevel() + "]** " + api.StaticData.getDataChampion(cm.getChampionId()).getName() + ": " + cm.getChampionPoints() + "\n";
+            i++;
+        }
+        return topChampions;
+    }
+    public static String getTopChampionsAtLeastUntilLevel(CachedRiotApi api, long id, int n, int level) {
+        //List<ChampionMastery> cms = api.ChampionMastery.getChampionMasteriesBySummoner(id);
+        List<ChampionMastery> cms = api.ChampionMastery.getChampionMasteriesBySummoner(id);
+        api.ChampionMastery.sortChampionMasteries(cms, ChampionMasteryDatabase.CompareMethod.LEVEL, false);
+        if (cms == null || cms.size() < 1) {
+            return "None";
+        }
+        String topChampions = "";
+        int i = 0;
+        for (ChampionMastery cm : cms) {
+            if (cm.getChampionLevel() < level && i >= n) {
+                break;
+            }
+            topChampions = topChampions + "**[" + cm.getChampionLevel() + "]** " + api.StaticData.getDataChampion(cm.getChampionId()).getName() + ": " + cm.getChampionPoints() + "\n";
+            i++;
         }
         return topChampions;
     }
@@ -82,11 +101,11 @@ public class SummonerInfo extends LoLCommand {
         String leaguePositions = "";
         int i = 0;
         for (LeaguePosition lp : lps) {
-            leaguePositions = leaguePositions + formatCapitalUnderscore(lp.getQueueType()) + ": **" + lp.getTier() + " " + lp.getRank() + "**\n";// + " (" + lp.getLeagueName() + ")";
-            i++;
             if (i >= n) {
                 break;
             }
+            leaguePositions = leaguePositions + formatCapitalUnderscore(lp.getQueueType()) + ": **" + lp.getTier() + " " + lp.getRank() + "**\n";// + " (" + lp.getLeagueName() + ")";
+            i++;
         }
         return leaguePositions;
     }
