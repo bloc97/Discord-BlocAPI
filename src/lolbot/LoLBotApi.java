@@ -5,7 +5,6 @@
  */
 package lolbot;
 
-import com.vdurmont.emoji.Emoji;
 import dbot.UserCommand;
 import static helpers.TextFormatter.formatNounOutput;
 import java.io.IOException;
@@ -20,20 +19,18 @@ import lolbot.LoLCommand.LoLCommandType;
 import lolbot.commands.ChampionInfo;
 import lolbot.commands.Help;
 import lolbot.commands.ItemInfo;
+import lolbot.commands.RandomFeaturedGame;
+import lolbot.commands.Status;
+import lolbot.commands.SummonerActivity;
 import lolbot.commands.SummonerInfo;
 import lolbot.commands.SummonerExtendedInfo;
 import lolbot.commands.SummonerMatchHistory;
 import net.bloc97.riot.cache.CachedRiotApi;
 import net.rithms.riot.constant.Platform;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.internal.ShardImpl;
-import sx.blah.discord.api.internal.json.objects.EmojiObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.impl.obj.EmojiImpl;
-import sx.blah.discord.handle.impl.obj.Reaction;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IReaction;
-import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
 
 /**
@@ -67,6 +64,9 @@ public class LoLBotApi {
         commandList.add(new SummonerExtendedInfo());
         commandList.add(new SummonerMatchHistory());
         commandList.add(new Help());
+        commandList.add(new Status());
+        commandList.add(new SummonerActivity());
+        commandList.add(new RandomFeaturedGame());
     }
     
     public LoLCommandType getType(String verb) {
@@ -103,7 +103,7 @@ public class LoLBotApi {
         for (LoLCommand command : commandList) {
             if (command.isTrigger(verb)) {
                 try {
-                    command.trigger(e, c, rApi);
+                    command.trigger(client, e, c, rApi);
                 } catch (Exception ex) {
                     System.out.println(ex);
                 }

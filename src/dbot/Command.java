@@ -5,6 +5,7 @@
  */
 package dbot;
 
+import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 /**
@@ -13,5 +14,5 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
  */
 public interface Command {
     public boolean isTrigger(String verb);
-    public boolean trigger(MessageReceivedEvent e, UserCommand c);
+    public boolean trigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c);
 }

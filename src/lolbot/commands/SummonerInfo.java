@@ -19,6 +19,7 @@ import net.bloc97.riot.cache.database.ChampionMasteryDatabase;
 import net.rithms.riot.api.endpoints.champion_mastery.dto.ChampionMastery;
 import net.rithms.riot.api.endpoints.league.dto.LeaguePosition;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
+import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
@@ -31,7 +32,7 @@ public class SummonerInfo extends LoLCommand {
         super(LoLCommandType.SEARCHSUMMONERNAME, "summonerinfo", "summoner", "si");
     }
     @Override
-    public boolean trigger(MessageReceivedEvent e, UserCommand c, CachedRiotApi api) {
+    public boolean trigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c, CachedRiotApi api) {
         String nameSearch = c.get();
         Summoner summoner = api.Summoner.getSummonerByName(nameSearch);
         

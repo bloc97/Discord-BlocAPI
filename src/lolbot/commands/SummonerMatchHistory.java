@@ -23,6 +23,7 @@ import net.rithms.riot.api.endpoints.match.dto.Participant;
 import net.rithms.riot.api.endpoints.match.dto.ParticipantStats;
 import net.rithms.riot.api.endpoints.match.dto.TeamStats;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
+import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
@@ -38,7 +39,7 @@ public class SummonerMatchHistory extends LoLCommand {
         super(LoLCommand.LoLCommandType.SEARCHSUMMONERNAME, "summonermatchhistory", "matchhistory", "history", "smh", "mh");
     }
     @Override
-    public boolean trigger(MessageReceivedEvent e, UserCommand c, CachedRiotApi api) {
+    public boolean trigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c, CachedRiotApi api) {
         String nameSearch = c.get();
         Summoner summoner = api.Summoner.getSummonerByName(nameSearch);
         

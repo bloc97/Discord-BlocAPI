@@ -48,7 +48,7 @@ public class LoLBotEvents {
         if (command.get().equals("lol")) {
             command.next();
             lolApi.parseMessage(e, command);
-        } else if (channel.getName().equals("leagueoflegends")) {
+        } else if (channel.getName().equals("leagueoflegends") || channel.isPrivate()) {
             lolApi.parseMessage(e, command);
         }
         

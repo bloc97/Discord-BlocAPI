@@ -6,11 +6,10 @@
 package lolbot.commands;
 
 import dbot.UserCommand;
-import helpers.TextFormatter;
 import lolbot.LoLCommand;
 import net.bloc97.riot.cache.CachedRiotApi;
-import net.rithms.riot.api.endpoints.static_data.dto.Champion;
 import net.rithms.riot.api.endpoints.static_data.dto.Item;
+import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
@@ -23,7 +22,7 @@ public class ItemInfo extends LoLCommand {
         super(LoLCommandType.SEARCHITEMNAME, "iteminfo", "ii");
     }
     @Override
-    public boolean trigger(MessageReceivedEvent e, UserCommand c, CachedRiotApi api) {
+    public boolean trigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c, CachedRiotApi api) {
         String nameSearch = c.get();
         Item item = api.StaticData.searchDataItemClosest(nameSearch);
         

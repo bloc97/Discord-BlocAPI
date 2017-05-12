@@ -19,6 +19,7 @@ import net.bloc97.riot.cache.CachedRiotApi;
 import net.rithms.riot.api.endpoints.match.dto.MatchList;
 import net.rithms.riot.api.endpoints.match.dto.MatchReference;
 import net.rithms.riot.api.endpoints.summoner.dto.Summoner;
+import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.api.internal.json.objects.EmbedObject.EmbedFieldObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -32,7 +33,7 @@ public class SummonerExtendedInfo extends LoLCommand {
         super(LoLCommandType.SEARCHSUMMONERNAME, "summonerextendedinfo", "sei");
     }
     @Override
-    public boolean trigger(MessageReceivedEvent e, UserCommand c, CachedRiotApi api) {
+    public boolean trigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c, CachedRiotApi api) {
         String nameSearch = c.get();
         Summoner summoner = api.Summoner.getSummonerByName(nameSearch);
         
