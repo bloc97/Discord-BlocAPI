@@ -16,12 +16,12 @@ import java.util.List;
  */
 public class UserCommand {
     private int currentIndex;
+    private int currentReverseIndex;
     private final ArrayList<String> content;
     private final char symbol;
     private static final List<Character> TRIGGERSYMBOLS = Arrays.asList('!', '$', '%', '&', '~', '\\');
     
     public UserCommand(String command) {
-        currentIndex = 0;
         
         if (command.isEmpty()) {
             content = new ArrayList<>();
@@ -73,6 +73,7 @@ public class UserCommand {
         }
         currentIndex = 0;
         content = new ArrayList<>(parsedCommand);
+        currentReverseIndex = content.size()-1;
         //System.out.println(Arrays.toString(content.toArray(new String[0])));
     }
     
@@ -97,20 +98,61 @@ public class UserCommand {
         }
         return content.get(currentIndex);
     }
+    public String getReverse() {
+        if (isOob(currentReverseIndex)) {
+            return "";
+        }
+        return content.get(currentReverseIndex);
+    }
     public String getNext() {
         if (isOob(currentIndex+1)) {
             return "";
         }
         return content.get(currentIndex+1);
     }
+    public String getNextReverse() {
+        if (isOob(currentReverseIndex-1)) {
+            return "";
+        }
+        return content.get(currentReverseIndex-1);
+    }
+    public String getAllTokensString() {
+        String string = "";
+        for (String s : content) {
+            string += s + " ";
+        }
+        return string.substring(0, string.length()-1);
+    }
+    public String getTokensString() {
+        String string = "";
+        if (currentIndex > currentReverseIndex) {
+            return "";
+        }
+        for (int i=currentIndex; i<=currentReverseIndex; i++) {
+            string += content.get(i) + " ";
+        }
+        return string.substring(0, string.length()-1);
+    }
     public boolean hasNext() {
-        return isOob(currentIndex+1);
+        return !isOob(currentIndex+1);
+    }
+    public boolean hasNextReverse() {
+        return !isOob(currentReverseIndex-1);
     }
     public boolean isOob(int i) {
-        return (i) >= content.size();
+        return (i) >= content.size() || (i) < 0;
     }
     public void next() {
         currentIndex++;
+    }
+    public void previous() {
+        currentIndex--;
+    }
+    public void nextReverse() {
+        currentReverseIndex--;
+    }
+    public void previousReverse() {
+        currentReverseIndex++;
     }
     public char getSymbol() {
         return symbol;

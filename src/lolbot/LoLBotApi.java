@@ -98,13 +98,14 @@ public class LoLBotApi {
                 break;
             
         }
-        
+        boolean isException = false;
         c.next();
         for (LoLCommand command : commandList) {
             if (command.isTrigger(verb)) {
                 try {
                     command.trigger(client, e, c, rApi);
                 } catch (Exception ex) {
+                    isException = true;
                     System.out.println(ex);
                 }
                 break;
@@ -124,6 +125,9 @@ public class LoLBotApi {
                     m.removeReaction(reaction);
                 }
             }
+        }
+        if (isException) {
+            m.addReaction(":x:");
         }
         
     }

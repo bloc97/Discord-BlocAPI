@@ -36,18 +36,24 @@ public class SummonerMatchHistory extends LoLCommand {
     private QueueConstants qConstants = new QueueConstants();
     
     public SummonerMatchHistory() {
-        super(LoLCommand.LoLCommandType.SEARCHSUMMONERNAME, "summonermatchhistory", "matchhistory", "history", "smh", "mh");
+        super(LoLCommand.LoLCommandType.SEARCHSUMMONERNAMEWITHPAGE, "summonermatchhistory", "matchhistory", "history", "smh", "mh");
     }
     @Override
     public boolean trigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c, CachedRiotApi api) {
-        String nameSearch = c.get();
-        Summoner summoner = api.Summoner.getSummonerByName(nameSearch);
         
-        c.next();
+        //c.next();
         int page = 1;
         try {
-            page = Integer.parseInt(c.get());
+            page = Integer.parseInt(c.getReverse());
+            c.nextReverse();
         } catch (NumberFormatException ex) {
+        }
+        String nameSearch = c.getTokensString();
+        Summoner summoner = api.Summoner.getSummonerByName(nameSearch);
+        
+        if (summoner == null) {
+            e.getChannel().sendMessage("Sorry, Summoner *" + formatNounOutput(nameSearch) + "* cound not be found.");
+            return false;
         }
         
         EmbedObject embed = new EmbedObject();
@@ -56,30 +62,35 @@ public class SummonerMatchHistory extends LoLCommand {
         String profilePicUrl = "http://ddragon.leagueoflegends.com/cdn/" + api.StaticData.getDataLatestVersion() + "/img/profileicon/" + summoner.getProfileIconId() + ".png";
         embed.author = new EmbedObject.AuthorObject(summoner.getName(), profileUrl, profilePicUrl, null);
         embed.description = "Level " + summoner.getSummonerLevel();
-        embed.footer = new EmbedObject.FooterObject("Page " + page + "/4", null, null);
         
         LinkedList<EmbedObject.EmbedFieldObject> fieldList = new LinkedList<>();
         
         MatchList ml = api.Match.getRecentMatchListByAccountId(summoner.getAccountId());
+        int matchesNumber = ml.getMatches().size();
+        int pageNumber = (int)Math.ceil(matchesNumber/5d);
+        
+        if (page > pageNumber) {
+            page = pageNumber;
+        } else if (page < 1) {
+            page = 1;
+        }
+        
+        embed.footer = new EmbedObject.FooterObject("Page " + page + "/" + pageNumber, null, null);
         
         //fieldList.add(new EmbedObject.EmbedFieldObject("Last " + n + " Games", getMatchesTitle(ml, n), true));
         //fieldList.add(new EmbedObject.EmbedFieldObject("\u3000\uFEFF", getMatchesChampions(ml, api, n), true));
         //fieldList.add(new EmbedObject.EmbedFieldObject("\uFEFF", getMatchesStats(ml, api, summoner.getId(), n), true));
         
-        fieldList.add(new EmbedObject.EmbedFieldObject("\uFEFF", getMatchAll(ml, api, summoner.getId(), page), true));
+        fieldList.add(new EmbedObject.EmbedFieldObject("\uFEFF", getMatchAll(ml, api, summoner.getId(), page, pageNumber), true));
         
         embed.fields = fieldList.toArray(new EmbedObject.EmbedFieldObject[0]);
-        e.getMessage().getChannel().sendMessage("", embed);
+        e.getChannel().sendMessage(embed);
         return true;
     }
     
     
-    private String getMatchAll(MatchList matches, CachedRiotApi api, long summonerId, int page) {
-        if (page > 4) {
-            page = 4;
-        } else if (page < 1) {
-            page = 1;
-        }
+    private String getMatchAll(MatchList matches, CachedRiotApi api, long summonerId, int page, int pageNumber) {
+        
         int begin = (page-1)*5;
         int end = begin+5;
         

@@ -44,7 +44,20 @@ public class Status extends LoLCommand {
         LinkedList<EmbedFieldObject> fieldList = new LinkedList<>();
         List<Service> services = status.getServices();
         for (Service service : services) {
-            fieldList.add(new EmbedFieldObject((service.getName().equals("League client update")) ? "Update" : service.getName(), (service.getStatus().equals("online")) ? ":white_check_mark:" : service.getStatus(), true));
+            String serviceName = (service.getName().equals("League client update")) ? "Update" : service.getName();
+            boolean isOnline = (service.getStatus().equals("online"));
+            
+            String serviceStatus;
+            if (isOnline && service.getIncidents().isEmpty()) {
+                serviceStatus = ":white_check_mark:";
+            } else if (isOnline) {
+                int incidents = service.getIncidents().size();
+                serviceStatus = ":warning: (" + incidents + ((incidents == 1) ?  " Incident)" : " Incidents)");
+            } else {
+                serviceStatus = service.getStatus();
+            }
+            
+            fieldList.add(new EmbedFieldObject(serviceName, serviceStatus, true));
         }
         
         embed.fields = fieldList.toArray(new EmbedFieldObject[0]);

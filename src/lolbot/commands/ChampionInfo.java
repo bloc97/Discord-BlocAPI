@@ -26,7 +26,7 @@ public class ChampionInfo extends LoLCommand {
     }
     @Override
     public boolean trigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c, CachedRiotApi api) {
-        String nameSearch = c.get();
+        String nameSearch = c.getTokensString();
         Champion champion = api.StaticData.searchDataChampion(nameSearch);
         
         if (champion == null) {

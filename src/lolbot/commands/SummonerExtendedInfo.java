@@ -34,7 +34,7 @@ public class SummonerExtendedInfo extends LoLCommand {
     }
     @Override
     public boolean trigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c, CachedRiotApi api) {
-        String nameSearch = c.get();
+        String nameSearch = c.getTokensString();
         Summoner summoner = api.Summoner.getSummonerByName(nameSearch);
         
         c.next();
