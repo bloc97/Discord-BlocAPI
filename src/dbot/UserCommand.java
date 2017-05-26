@@ -5,6 +5,7 @@
  */
 package dbot;
 
+import helpers.TextFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -20,9 +21,36 @@ public class UserCommand {
     private final ArrayList<String> content;
     private final char symbol;
     private static final List<Character> TRIGGERSYMBOLS = Arrays.asList('!', '$', '%', '&', '~', '\\');
+    private final LinkedList<Character> separators;
+    
+    public UserCommand(int size) { //For test generation
+        content = new ArrayList<>();
+        symbol = 0;
+        separators = new LinkedList<>();
+        currentIndex = 0;
+        currentReverseIndex = size - 1;
+    }
+    public UserCommand(String[] content) {
+        this.content = new ArrayList<>(Arrays.asList(content));
+        this.separators = new LinkedList<>();
+        separators.add(' ');
+        symbol = 0;
+        currentIndex = 0;
+        currentReverseIndex = content.length-1;
+    }
+    
     
     public UserCommand(String command) {
-        
+        this(command, ' ');
+    }
+    
+    public UserCommand(String command, char... separatorsList) {
+        this.separators = new LinkedList<>();
+        for (Character c : separatorsList) {
+            if (c != '"') { //Ignore double quotes
+                separators.add(c);
+            }
+        }
         if (command.isEmpty()) {
             content = new ArrayList<>();
             symbol = 0;
@@ -31,6 +59,8 @@ public class UserCommand {
         if (TRIGGERSYMBOLS.contains(command.charAt(0))) {
             symbol = command.charAt(0);
             command = command.substring(1);
+        } else if (TextFormatter.isCharLetterASCII(command.charAt(0)) || TextFormatter.isCharNumberASCII(command.charAt(0))) {
+            symbol = 0;
         } else {
             content = new ArrayList<>();
             symbol = 0;
@@ -55,7 +85,7 @@ public class UserCommand {
                     currentString = currentString + c;
                 }
             } else {
-                if (c == ' ') {
+                if (separators.contains(c)) {
                     if (currentString.length() > 0) {
                         parsedCommand.addLast(currentString);
                         currentString = "";
@@ -77,14 +107,27 @@ public class UserCommand {
         //System.out.println(Arrays.toString(content.toArray(new String[0])));
     }
     
-    public ArrayList<String> getContent() {
+    public List<String> getContent() {
         return content;
     }
     public int getCurrentIndex() {
         return currentIndex;
     }
+    public int getCurrentReverseIndex() {
+        return currentReverseIndex;
+    }
     public int size() {
         return content.size();
+    }
+    public int remainingSize() {
+        if (currentIndex > currentReverseIndex) {
+            return 0;
+        }
+        return currentReverseIndex - currentIndex + 1;
+    }
+    public void reset() {
+        currentIndex = 0;
+        currentReverseIndex = content.size()-1;
     }
     public String get(int i) {
         if (isOob(i)) {
@@ -93,45 +136,38 @@ public class UserCommand {
         return content.get(i);
     }
     public String get() {
-        if (isOob(currentIndex)) {
-            return "";
-        }
-        return content.get(currentIndex);
+        return get(currentIndex);
     }
     public String getReverse() {
-        if (isOob(currentReverseIndex)) {
-            return "";
-        }
-        return content.get(currentReverseIndex);
+        return get(currentReverseIndex);
     }
     public String getNext() {
-        if (isOob(currentIndex+1)) {
-            return "";
-        }
-        return content.get(currentIndex+1);
+        return get(currentIndex+1);
     }
     public String getNextReverse() {
-        if (isOob(currentReverseIndex-1)) {
-            return "";
-        }
-        return content.get(currentReverseIndex-1);
+        return get(currentReverseIndex-1);
     }
     public String getAllTokensString() {
-        String string = "";
-        for (String s : content) {
-            string += s + " ";
-        }
-        return string.substring(0, string.length()-1);
+        return TextFormatter.join(content.toArray(new String[0]), separators.getFirst());
+    }
+    public String[] getAllTokensArray() {
+        return content.toArray(new String[0]);
     }
     public String getTokensString() {
-        String string = "";
         if (currentIndex > currentReverseIndex) {
             return "";
         }
-        for (int i=currentIndex; i<=currentReverseIndex; i++) {
-            string += content.get(i) + " ";
+        int index = TextFormatter.boundExclude(currentIndex, 0, size());
+        int reverseIndex = TextFormatter.boundExclude(currentReverseIndex, 0, size());
+        return TextFormatter.join(Arrays.copyOfRange(content.toArray(new String[0]), index, reverseIndex+1), separators.getFirst());
+    }
+    public String[] getTokensArray() {
+        if (currentIndex > currentReverseIndex) {
+            return new String[] {""};
         }
-        return string.substring(0, string.length()-1);
+        int index = TextFormatter.boundExclude(currentIndex, 0, size());
+        int reverseIndex = TextFormatter.boundExclude(currentReverseIndex, 0, size());
+        return Arrays.copyOfRange(content.toArray(new String[0]), index, reverseIndex+1);
     }
     public boolean hasNext() {
         return !isOob(currentIndex+1);
@@ -140,7 +176,7 @@ public class UserCommand {
         return !isOob(currentReverseIndex-1);
     }
     public boolean isOob(int i) {
-        return (i) >= content.size() || (i) < 0;
+        return i >= content.size() || i < 0;
     }
     public void next() {
         currentIndex++;

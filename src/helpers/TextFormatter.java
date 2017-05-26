@@ -6,10 +6,7 @@
 package helpers;
 
 import java.util.Date;
-import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.api.internal.json.objects.EmbedObject.FooterObject;
-import sx.blah.discord.handle.impl.obj.Embed;
-import sx.blah.discord.handle.impl.obj.Embed.EmbedFooter;
 
 /**
  *
@@ -34,18 +31,26 @@ public abstract class TextFormatter {
         char[] cArr = s.toCharArray();
         String formattedString = "";
         for (int i=0; i<cArr.length; i++) {
-            if (isTextASCII(cArr[i])) {
+            if (isCharTextASCII(cArr[i])) {
                 formattedString += cArr[i];
             }
         }
         return formattedString;
     }
     
-    public static boolean isTextASCII(char c) {
+    public static boolean isCharTextASCII(char c) {
         return (c == 10 || c == 12 || c == 13 || (c >= 32 && c <= 126));
         //10, '\n' newline
         //12, '\f' newpage
         //13, '\r' return to beginning of line
+    }
+    
+    public static boolean isCharLetterASCII(char c) {
+        return ((c >= 65 && c <= 90) || (c >= 97 && c <= 122));
+    }
+    
+    public static boolean isCharNumberASCII(char c) {
+        return ((c >= 48 && c <= 57));
     }
     
     public static String formatNounOutput(String s) { //Formats a unformatted noun for output (capitalize first letter)
@@ -58,8 +63,49 @@ public abstract class TextFormatter {
         }
         return s;
     }
-    public static FooterObject getSummonerEmbedFooter(long summonerId, long accountId, long lastDate) {
-        return new FooterObject(summonerId + " | " + accountId + "\u2003\u2003" + "Last Activity: " + new Date(lastDate).toString(), "", "");
+    
+    public static String join(String[] array) {
+        String string = "";
+        for (String s : array) {
+            string = string.concat(s);
+        }
+        return string;
+    }
+    public static String join(String[] array, Character c) {
+        if (c == null) {
+            c = ' ';
+        }
+        String string = "";
+        for (String s : array) {
+            string = string.concat(s + c);
+        }
+        return string.substring(0, string.length()-1);
+    }
+    
+    public static int bound(int i, int min, int max) {
+        if (min > max) {
+            throw new IllegalArgumentException("Minimum value cannot be bigger than maximum.");
+        }
+        if (i < min) {
+            i = min;
+        }
+        if (i > max) {
+            i = max;
+        }
+        return i;
+    }
+    
+    public static int boundExclude(int i, int min, int limit) {
+        if (min >= limit) {
+            throw new IllegalArgumentException("Minimum value cannot be bigger or equal than limit.");
+        }
+        if (i < min) {
+            i = min;
+        }
+        if (i >= limit) {
+            i = limit - 1;
+        }
+        return i;
     }
     
 }

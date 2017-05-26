@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import lolbot.LoLBotEvents;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
@@ -33,7 +32,7 @@ public class Main {
         IDiscordClient bot = createClient(dApiKey, true);
         
         EventDispatcher botDispatcher = bot.getDispatcher();
-        botDispatcher.registerListener(new LoLBotEvents(bot));
+        botDispatcher.registerListener(new ModuleLoader());
         
     }
     

@@ -3,13 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/lolbot/LoLCommand.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/lolbot/commands/ChampionInfo.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/lolbot/commands/ItemInfo.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/lolbot/commands/Help.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/lolbot/LoLBotApi.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/lolbot/commands/SummonerMatchHistory.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/lolbot/commands/SummonerInfo.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/UserCommand.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/Main.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/addons/Addon.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/helpers/TextFormatter.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/Module.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/addons/GeneralAddon.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/test/helpers/RandomTest.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/helpers/MapSort.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/test/dbot/UserCommandTest.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/addons/MessageAddon.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/ModuleLoader.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/helpers/Random.java</file>
         </group>
     </open-files>
 </project-private>
