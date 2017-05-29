@@ -5,9 +5,6 @@
  */
 package helpers;
 
-import java.util.Date;
-import sx.blah.discord.api.internal.json.objects.EmbedObject.FooterObject;
-
 /**
  *
  * @author bowen
@@ -44,11 +41,9 @@ public abstract class TextFormatter {
         //12, '\f' newpage
         //13, '\r' return to beginning of line
     }
-    
     public static boolean isCharLetterASCII(char c) {
         return ((c >= 65 && c <= 90) || (c >= 97 && c <= 122));
     }
-    
     public static boolean isCharNumberASCII(char c) {
         return ((c >= 48 && c <= 57));
     }
@@ -56,7 +51,6 @@ public abstract class TextFormatter {
     public static String formatNounOutput(String s) { //Formats a unformatted noun for output (capitalize first letter)
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
-    
     public static String formatOutput(String s) {
         if (s.isEmpty()) {
             return "None";
@@ -94,7 +88,6 @@ public abstract class TextFormatter {
         }
         return i;
     }
-    
     public static int boundExclude(int i, int min, int limit) {
         if (min >= limit) {
             throw new IllegalArgumentException("Minimum value cannot be bigger or equal than limit.");
@@ -106,6 +99,15 @@ public abstract class TextFormatter {
             i = limit - 1;
         }
         return i;
+    }
+    
+    public static boolean containsCharacter(String string, char[] characters) {
+        for (char c : characters) {
+            if (string.indexOf(c) != -1) {
+                return true;
+            }
+        }
+        return false;
     }
     
 }

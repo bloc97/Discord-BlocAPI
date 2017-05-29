@@ -18,7 +18,7 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author bowen
  */
-public class Commands implements MessageAddon {
+public class Modules implements MessageAddon {
 
     @Override
     public boolean isTrigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c) {
@@ -32,37 +32,37 @@ public class Commands implements MessageAddon {
 
     @Override
     public String getFullName() {
-        return "Commands Addon";
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String getFullDescription() {
-        return "Displays the command list when called.";
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String getFullHelp() {
-        return "!commands <page> - Displays the command list.";
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String getShortName() {
-        return "Commands";
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String getShortHelp() {
-        return "!commands <page>";
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public short getUid() {
-        return 1;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public boolean hasPermissions(IUser user, IChannel channel, IGuild guild) {
-        return true;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

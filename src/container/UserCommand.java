@@ -1,15 +1,22 @@
+package container;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dbot;
+
 
 import helpers.TextFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -18,41 +25,59 @@ import java.util.List;
 public class UserCommand {
     private int currentIndex;
     private int currentReverseIndex;
-    private final ArrayList<String> content;
+    private final List<String> content;
     private final char symbol;
-    private static final List<Character> TRIGGERSYMBOLS = Arrays.asList('!', '$', '%', '&', '~', '\\');
-    private final LinkedList<Character> separators;
+    private static final Set<Character> TRIGGERSYMBOLS = new HashSet<>(Arrays.asList('!', '$', '%', '&', '~', '\\'));
+    private final LinkedHashSet<Character> separators;
+    
+    private final Set<String> flags; //flags start with -, eg -f, -l, -help
+    private final Map<String, String> parameters; //parameters start with --, and ends until another parameter or flag is detected or end of string, eg --get 123
     
     public UserCommand(int size) { //For test generation
         content = new ArrayList<>();
+        separators = new LinkedHashSet<>();
+        flags = new HashSet<>();
+        parameters = new HashMap<>();
         symbol = 0;
-        separators = new LinkedList<>();
         currentIndex = 0;
         currentReverseIndex = size - 1;
     }
     public UserCommand(String[] content) {
         this.content = new ArrayList<>(Arrays.asList(content));
-        this.separators = new LinkedList<>();
+        this.separators = new LinkedHashSet<>();
         separators.add(' ');
+        this.flags = new HashSet<>();
+        this.parameters = new HashMap<>();
         symbol = 0;
         currentIndex = 0;
         currentReverseIndex = content.length-1;
     }
     
+    private UserCommand(int currentIndex, int currentReverseIndex, List<String> content, char symbol, Set<Character> separators, Set<String> flags, Map<String, String> parameters) {
+        this.content = new ArrayList<>(content);
+        this.separators = new LinkedHashSet<>(separators);
+        this.flags = new HashSet<>(flags);
+        this.parameters = new HashMap<>(parameters);
+        this.symbol = symbol;
+        this.currentIndex = currentIndex;
+        this.currentReverseIndex = currentReverseIndex;
+    }
     
     public UserCommand(String command) {
         this(command, ' ');
     }
     
     public UserCommand(String command, char... separatorsList) {
-        this.separators = new LinkedList<>();
+        this.separators = new LinkedHashSet<>();
         for (Character c : separatorsList) {
-            if (c != '"') { //Ignore double quotes
+            if (c != '"' && c != '-' && !TRIGGERSYMBOLS.contains(c)) { //Ignore double quotes, - and triggersymbols
                 separators.add(c);
             }
         }
         if (command.isEmpty()) {
             content = new ArrayList<>();
+            flags = new HashSet<>();
+            parameters = new HashMap<>();
             symbol = 0;
             return;
         }
@@ -63,6 +88,8 @@ public class UserCommand {
             symbol = 0;
         } else {
             content = new ArrayList<>();
+            flags = new HashSet<>();
+            parameters = new HashMap<>();
             symbol = 0;
             return;
         }
@@ -101,10 +128,29 @@ public class UserCommand {
             parsedCommand.addLast(currentString);
             currentString = "";
         }
+        
+        int i = 0;
+        boolean isInParameter = false;
+        for (String token : parsedCommand) {
+            if (token.startsWith("--")) {
+                if (!isInParameter) {
+                    isInParameter = true;
+                }
+            } else if (token.startsWith("-")) {
+                
+            } else {
+                
+            }
+            i++;
+        }
+        
+        
         currentIndex = 0;
         content = new ArrayList<>(parsedCommand);
         currentReverseIndex = content.size()-1;
         //System.out.println(Arrays.toString(content.toArray(new String[0])));
+        
+        
     }
     
     public List<String> getContent() {
@@ -148,7 +194,7 @@ public class UserCommand {
         return get(currentReverseIndex-1);
     }
     public String getAllTokensString() {
-        return TextFormatter.join(content.toArray(new String[0]), separators.getFirst());
+        return TextFormatter.join(content.toArray(new String[0]), new LinkedList<>(separators).getFirst());
     }
     public String[] getAllTokensArray() {
         return content.toArray(new String[0]);
@@ -159,7 +205,7 @@ public class UserCommand {
         }
         int index = TextFormatter.boundExclude(currentIndex, 0, size());
         int reverseIndex = TextFormatter.boundExclude(currentReverseIndex, 0, size());
-        return TextFormatter.join(Arrays.copyOfRange(content.toArray(new String[0]), index, reverseIndex+1), separators.getFirst());
+        return TextFormatter.join(Arrays.copyOfRange(content.toArray(new String[0]), index, reverseIndex+1), new LinkedList<>(separators).getFirst());
     }
     public String[] getTokensArray() {
         if (currentIndex > currentReverseIndex) {
@@ -195,5 +241,9 @@ public class UserCommand {
     }
     public String getSymbolAsString() {
         return "" + symbol;
+    }
+    @Override
+    public UserCommand clone() {
+        return new UserCommand(currentIndex, currentReverseIndex, content, symbol, separators, flags, parameters);
     }
 }

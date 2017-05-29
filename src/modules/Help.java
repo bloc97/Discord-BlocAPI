@@ -6,9 +6,11 @@
 package modules;
 
 import addon.Addon;
+import addon.MessageAddon;
 import dbot.Module;
-import dbot.UserCommand;
-import sx.blah.discord.api.IDiscordClient;
+import container.UserCommand;
+import modules.help.Commands;
+import modules.help.Modules;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -19,8 +21,11 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
  */
 public class Help extends Module {
 
-    public Help(IDiscordClient client, Addon... addonsList) {
-        super(client, addonsList);
+    public Help(Addon... addonsList) {
+        super(addonsList);
+        add(new modules.help.Help());
+        add(new Commands());
+        add(new Modules());
     }
 
     @Override
@@ -65,17 +70,32 @@ public class Help extends Module {
 
     @Override
     public void onEvent(Event e) {
-        System.out.println(getShortName() + " Module Enabled.");
+        for (Addon addon : addons) {
+            addon.trigger(botClient, e);
+        }
     }
 
     @Override
     public void onReady(ReadyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println(getShortName() + " Module Enabled.");
     }
 
     @Override
     public void onMessage(MessageReceivedEvent e, UserCommand c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (e.getAuthor().isBot()) {
+            return;
+        }
+        if (!(e.getChannel().isPrivate() || c.get().equalsIgnoreCase(botClient.getOurUser().getName()) || e.getMessage().getMentions().contains(botClient.getOurUser()))) {
+            return;
+        }
+        c.next();
+        for (Addon addon : addons) {
+            if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
+                if (addon instanceof MessageAddon) {
+                    ((MessageAddon) addon).trigger(botClient, e, c.clone());
+                }
+            }
+        }
     }
     
 }

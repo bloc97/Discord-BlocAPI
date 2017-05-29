@@ -5,6 +5,7 @@
  */
 package dbot;
 
+import container.UserCommand;
 import addon.Addon;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -19,16 +20,15 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
  * @author bowen
  */
 public abstract class Module {
-    protected IDiscordClient botClient;
+    protected IDiscordClient botClient = null;
     protected final LinkedList<Addon> addons;
     
     private ModuleLoader moduleLoader = null;
     private boolean isLoaded = false;
     private int id = -1;
     
-    public Module(IDiscordClient client, Addon... addonsList) {
+    public Module(Addon... addonsList) {
         addons = new LinkedList<>();
-        botClient = client;
         addons.addAll(Arrays.asList(addonsList));
     }
     public final void add(Addon addon) {
@@ -62,6 +62,9 @@ public abstract class Module {
     }
     
     public void confirmUnload(ModuleLoader moduleLoader, int id) {
+        if (!isLoaded) {
+            throw new IllegalStateException("Module is already unloaded!");
+        }
         if (id == this.id && moduleLoader == this.moduleLoader) {
             this.moduleLoader = null;
             this.id = -1;
@@ -81,6 +84,11 @@ public abstract class Module {
     public abstract String getVersion();
     public abstract String getAuthor();
     public abstract long getUid();
+    
+    public void ready(ReadyEvent e) {
+        botClient = e.getClient();
+        onReady(e);
+    }
     
     public abstract void onEvent(Event e);
     public abstract void onReady(ReadyEvent e);

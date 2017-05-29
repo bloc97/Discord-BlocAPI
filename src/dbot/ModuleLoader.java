@@ -5,12 +5,14 @@
  */
 package dbot;
 
+import container.UserCommand;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import modules.Help;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
@@ -31,26 +33,33 @@ public class ModuleLoader {
     public ModuleLoader(Module... modulesList) {
         modules = new HashSet<>();
         disabledModules = new HashSet<>();
-        modules.addAll(Arrays.asList(modulesList));
+        for (Module module : modulesList) {
+            add(module);
+        }
+        add(new Help());
     }
     
-    public void add(Module module) {
+    public final void add(Module module) {
         if (disabledModules.contains(module)) {
             disabledModules.remove(module);
         }
         modules.add(module);
-        System.out.println(module.getShortName() + " Module Enabled.");
+        module.confirmLoad(this, currentIdIndex);
+        currentIdIndex++;
     }
     
     public void enable(Module module) {
         if (disabledModules.contains(module)) {
             disabledModules.remove(module);
+            module.confirmLoad(this, currentIdIndex);
+            currentIdIndex++;
             modules.add(module);
         }
     }
     public void disable(Module module) {
         if (modules.contains(module)) {
             modules.remove(module);
+            module.confirmUnload(this, module.getId());
             disabledModules.add(module);
         }
     }
@@ -88,12 +97,12 @@ public class ModuleLoader {
     }
     public List<Module> getAllModules() {
         LinkedList<Module> list = new LinkedList<>();
-        for (Module module : modules) {
+        modules.forEach((module) -> {
             list.add(module);
-        }
-        for (Module module : disabledModules) {
+        });
+        disabledModules.forEach((module) -> {
             list.add(module);
-        }
+        });
         return new ArrayList<>(list);
     }
     
@@ -106,29 +115,67 @@ public class ModuleLoader {
             return;
         }
         
+        LinkedList<Module> erronousModules = new LinkedList<>();
+        
         modules.forEach((module) -> {
-            module.onEvent(e);
+            try {
+                module.onEvent(e);
+            } catch (Exception ex) {
+                erronousModules.add(module);
+                ex.printStackTrace();
+                System.out.println(module.getShortName() + " Module Error: " + ex);
+                System.out.println("Disabling " + module.getShortName() + " Module.");
+            }
+        });
+        
+        erronousModules.forEach((module) -> {
+            disable(module);
         });
     }
     @EventSubscriber
     public void onReady(ReadyEvent e) {
         System.out.println("Bot Ready.");
         //e.getClient().online("Not Connected");
+        LinkedList<Module> erronousModules = new LinkedList<>();
         
         modules.forEach((module) -> {
-            module.onReady(e);
+            try {
+                module.ready(e);
+                System.out.println(module.getShortName() + " Module Ready.");
+            } catch (Exception ex) {
+                erronousModules.add(module);
+                ex.printStackTrace();
+                System.out.println(module.getShortName() + " Module Error: " + ex);
+                System.out.println("Disabling " + module.getShortName() + " Module.");
+            }
         });
+        
+        erronousModules.forEach((module) -> {
+            disable(module);
+        });
+        
         //bot.online("League of Legends Dev API");
     }
     @EventSubscriber
     public void onMessageReceived(MessageReceivedEvent e) {
         IMessage message = e.getMessage();
-        
         UserCommand command = new UserCommand(message.getContent());
         
+        LinkedList<Module> erronousModules = new LinkedList<>();
+        
         modules.forEach((module) -> {
-            module.onMessage(e, command);
-            command.reset();
+            try {
+                module.onMessage(e, command.clone());
+            } catch (Exception ex) {
+                erronousModules.add(module);
+                ex.printStackTrace();
+                System.out.println(module.getShortName() + " Module Error: " + ex);
+                System.out.println("Disabling " + module.getShortName() + " Module.");
+            }
+        });
+        
+        erronousModules.forEach((module) -> {
+            disable(module);
         });
         
     }

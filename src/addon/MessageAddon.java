@@ -5,7 +5,7 @@
  */
 package addon;
 
-import dbot.UserCommand;
+import container.UserCommand;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
