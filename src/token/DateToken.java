@@ -25,7 +25,7 @@ public class DateToken extends Token<Date> {
     }
     public DateToken(String string) {
         super(string);
-        content = new Date(Long.parseLong(string));
+        content = new Date(Date.parse(string));
     }
     
 
@@ -42,6 +42,21 @@ public class DateToken extends Token<Date> {
     @Override
     public Date getContent() {
         return content;
+    }
+    
+    @Override
+    public String getTokenType() {
+        return "Date";
+    }
+    
+    public static boolean isType(String string) {
+        try {
+            Date.parse(string);
+            System.out.println(Date.parse(string));
+            return true;
+        } catch (IllegalArgumentException ex) {
+            return false;
+        }
     }
     
 }

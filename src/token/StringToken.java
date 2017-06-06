@@ -31,5 +31,14 @@ public class StringToken extends Token<String> {
     public String getContent() {
         return content;
     }
+
+    @Override
+    public String getTokenType() {
+        return "String";
+    }
+    
+    public static boolean isType(String string) {
+        return !string.isEmpty();
+    }
     
 }

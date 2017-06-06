@@ -203,16 +203,16 @@ public class UserCommand {
         if (currentIndex > currentReverseIndex) {
             return "";
         }
-        int index = TextFormatter.boundExclude(currentIndex, 0, size());
-        int reverseIndex = TextFormatter.boundExclude(currentReverseIndex, 0, size());
+        int index = TextFormatter.boundExcludeMax(currentIndex, 0, size());
+        int reverseIndex = TextFormatter.boundExcludeMax(currentReverseIndex, 0, size());
         return TextFormatter.join(Arrays.copyOfRange(content.toArray(new String[0]), index, reverseIndex+1), new LinkedList<>(separators).getFirst());
     }
     public String[] getTokensArray() {
         if (currentIndex > currentReverseIndex) {
             return new String[] {""};
         }
-        int index = TextFormatter.boundExclude(currentIndex, 0, size());
-        int reverseIndex = TextFormatter.boundExclude(currentReverseIndex, 0, size());
+        int index = TextFormatter.boundExcludeMax(currentIndex, 0, size());
+        int reverseIndex = TextFormatter.boundExcludeMax(currentReverseIndex, 0, size());
         return Arrays.copyOfRange(content.toArray(new String[0]), index, reverseIndex+1);
     }
     public boolean hasNext() {

@@ -68,5 +68,20 @@ public class NumberToken extends Token<Number> {
             }
         };
     }
+
+    @Override
+    public String getTokenType() {
+        return "Number";
+    }
+    
+    public static boolean isType(String string) {
+        try {
+            Double.parseDouble(string);
+            Long.parseLong(string);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+    }
     
 }

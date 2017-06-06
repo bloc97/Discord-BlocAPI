@@ -14,8 +14,17 @@ import java.util.List;
  */
 public class ParameterStringContainer extends StringContainer {
     
+    public ParameterStringContainer(List<String> content) {
+        this(content, new char[] {' '});
+    }
     public ParameterStringContainer(List<String> content, char[] separatorList) {
-        super(1, content.size() - 1, untokenizeAsString(content, separatorList), content, "--", "");
+        this(untokenizeAsString(content, separatorList), content);
+    }
+    private ParameterStringContainer(String rawString, List<String> content) {
+        super(rawString, rawString.substring(2), content, "--", "");
+    }
+    private ParameterStringContainer(int index, int reverseIndex, String rawString, List<String> content) {
+        super(index, reverseIndex, rawString, rawString.substring(2), content, "--", "");
     }
     public static String untokenizeAsString(List<String> content, char[] separatorList) {
         String string = "--";
@@ -27,6 +36,9 @@ public class ParameterStringContainer extends StringContainer {
             }
         }
         return string;
+    }
+    public ParameterStringContainer clone() {
+        return new ParameterStringContainer(index, reverseIndex, getRawString(), getContent());
     }
     
 }
