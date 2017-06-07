@@ -19,6 +19,19 @@ public abstract class TextFormatter {
         return string;
     }
     
+    public static String fillBegin(String string, char c, int finalLength) {
+        while (string.length() < finalLength) {
+            string = c + string;
+        }
+        return string;
+    }
+    public static String fillEnd(String string, char c, int finalLength) {
+        while (string.length() < finalLength) {
+            string = string + c;
+        }
+        return string;
+    }
+    
     public static String formatCapitalUnderscore(String s) {
         String string = "";
         String[] sArr = s.split("_");

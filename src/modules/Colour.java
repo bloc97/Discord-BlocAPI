@@ -9,9 +9,9 @@ import addon.Addon;
 import container.StringFastContainer;
 import dbot.Module;
 import dbot.ModuleLoader;
-import modules.help.Commands;
+import modules.colour.RandomColour;
+import modules.colour.SearchColour;
 import modules.help.LoaderAccessor;
-import modules.help.Modules;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
@@ -21,26 +21,24 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
  *
  * @author bowen
  */
-public class Help extends Module {
+public class Colour extends Module {
     
-    public interface HelpAddon {
-        public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, ModuleLoader moduleLoader);
+    public interface ColourAddon {
+        public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e);
     }
     
-    public Help() {
-        add(new modules.help.Help());
-        add(new Commands());
-        add(new Modules());
+    public Colour() {
+        add(new RandomColour());
+        add(new SearchColour());
     }
-
     @Override
     public String getFullName() {
-        return "Default Help Module";
+        return "Colour";
     }
 
     @Override
     public String getFullDescription() {
-        return "Automatically generates help and commands pages.";
+        return "";
     }
 
     @Override
@@ -50,17 +48,17 @@ public class Help extends Module {
 
     @Override
     public String getShortName() {
-        return "Help";
+        return "Colour";
     }
 
     @Override
     public String getShortDescription() {
-        return "Displays Help and Commands pages.";
+        return "";
     }
 
     @Override
     public String getVersion() {
-        return "0.1";
+        return "1.0";
     }
 
     @Override
@@ -70,7 +68,7 @@ public class Help extends Module {
 
     @Override
     public long getUid() {
-        return -8461062l;
+        return -9123564l;
     }
 
     @Override
@@ -90,22 +88,17 @@ public class Help extends Module {
         }
         StringFastContainer c = new StringFastContainer(e.getMessage().getContent(), "!");
         
-        if (!(e.getChannel().isPrivate() || c.get().equalsIgnoreCase(botClient.getOurUser().getName()) || e.getMessage().getMentions().contains(botClient.getOurUser()))) {
-            return false;
-        } 
-        //if (e.getChannel().isPrivate() || c.get().equalsIgnoreCase(botClient.getOurUser().getName()) || (e.getMessage().getMentions() != null && e.getMessage().getMentions().contains(botClient.getOurUser()))) {
-        for (Addon addon : addons) {
-            if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
-
-                HelpAddon ha = (HelpAddon) addon;
-                if (ha.triggerMessage(botClient, e, getModuleLoader())) {
-                    return true;
+        if (e.getChannel().isPrivate() || c.get().equalsIgnoreCase(botClient.getOurUser().getName()) || (e.getMessage().getMentions() != null && e.getMessage().getMentions().contains(botClient.getOurUser()))) {
+            for (Addon addon : addons) {
+                if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
+                    
+                    if (((ColourAddon)addon).triggerMessage(botClient, e)) {
+                        return true;
+                    }
                 }
             }
         }
-        //}
         return false;
     }
-
     
 }

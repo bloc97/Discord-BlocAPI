@@ -5,7 +5,7 @@
  */
 package helpers;
 
-import container.StringPreviewContainer;
+import container.StringFastContainer;
 import container.StringAdvancedContainer;
 import container.ParameterStringContainer;
 import container.StringContainer;
@@ -22,7 +22,11 @@ import java.util.Set;
  * @author bowen
  */
 public abstract class ParserUtils {
-
+    
+    public static boolean startsWithCaseless(String rawString, String string) {
+        return rawString.toLowerCase().startsWith(string.toLowerCase());
+    }
+    
     public static int findPrefix(String string, String[] prefixList) {
         return findPrefix(string, prefixList, false);
     }

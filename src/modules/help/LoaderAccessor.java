@@ -18,5 +18,4 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
  */
 public interface LoaderAccessor {
     
-    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, ModuleLoader moduleLoader);
 }

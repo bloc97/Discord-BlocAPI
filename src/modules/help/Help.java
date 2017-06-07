@@ -6,11 +6,15 @@
 package modules.help;
 
 import addon.Addon;
-import container.StringPreviewContainer;
+import container.StringFastContainer;
 import dbot.Module;
 import dbot.ModuleLoader;
+import helpers.ParserUtils;
+import modules.Help.HelpAddon;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
+import sx.blah.discord.api.internal.json.objects.EmbedObject.EmbedFieldObject;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
@@ -21,7 +25,7 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author bowen
  */
-public class Help implements Addon, LoaderAccessor {
+public class Help implements Addon, HelpAddon {
 
     @Override
     public String getName() {
@@ -35,13 +39,19 @@ public class Help implements Addon, LoaderAccessor {
 
     @Override
     public String getFullHelp() {
-        return "!help - Displays the main help page\n" +
-                "!<command> --help - Displays help for specific command";
+        return "**!help** - *Shows the general help page*\n" +
+                "!<command> **--help** - *Shows a specific command's help page*";
     }
     
     @Override
     public String getShortHelp() {
-        return "!help";
+        return "**!help** - *Shows the general help page*\n" +
+                "!<command> **--help** - *Shows a specific command's help page*";
+    }
+    
+    @Override
+    public int getColour() {
+        return 5563639;
     }
 
     @Override
@@ -57,32 +67,14 @@ public class Help implements Addon, LoaderAccessor {
     @Override
     public boolean isTrigger(IDiscordClient client, Event e) {
         if (e instanceof MessageReceivedEvent) {
-            StringPreviewContainer c = new StringPreviewContainer(((MessageReceivedEvent)e).getMessage().getContent(), "!");
-            if (c.get().equalsIgnoreCase(client.getOurUser().getName())) {
-                c.next();
-            }
-            if (c.get().equalsIgnoreCase("help")) {
-                return true;
-            }
+            MessageReceivedEvent em = (MessageReceivedEvent) e;
+            String rawString = em.getMessage().getContent();
+            String botName = client.getOurUser().getName();
+            String commandName = "help";
+            return ParserUtils.startsWithCaseless(rawString, "!" + botName + " " + commandName) || ParserUtils.startsWithCaseless(rawString, "!" + commandName) ;
         }
         return false;
     }
-
-    @Override
-    public boolean trigger(IDiscordClient client, Event e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean triggerReady(IDiscordClient client, ReadyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     @Override
     public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, ModuleLoader moduleLoader) {
         
@@ -90,7 +82,15 @@ public class Help implements Addon, LoaderAccessor {
             for (Module module : moduleLoader.getEnabledModules()) {
                 for (Addon addon : module.getAddons()) {
                     if (addon.isTrigger(client, e)) {
-                        e.getAuthor().getOrCreatePMChannel().sendMessage("```\n" + addon.getFullHelp()+ "\n" + "```");
+                        
+                        EmbedObject eo = new EmbedObject();
+                        String finalString = "*" + addon.getName() + "*\n" + addon.getFullHelp();
+                        EmbedFieldObject fo = new EmbedFieldObject("Help", finalString, false);
+                        eo.fields = new EmbedFieldObject[] {fo};
+                        eo.color = addon.getColour();
+                        
+                        e.getAuthor().getOrCreatePMChannel().sendMessage(eo);
+                        
                         break;
                     }
                 }
@@ -98,19 +98,27 @@ public class Help implements Addon, LoaderAccessor {
             return true;
         }
          
-        StringPreviewContainer c = new StringPreviewContainer(e.getMessage().getContent(), "!");
+        StringFastContainer c = new StringFastContainer(e.getMessage().getContent(), "!");
         if (c.get().equalsIgnoreCase(client.getOurUser().getName())) {
             c.next();
         }
         if (c.get().equalsIgnoreCase("help")) {
+            IUser bot = client.getOurUser();
+            EmbedObject eo = new EmbedObject();
+            //eo.author = new EmbedObject.AuthorObject(bot.getName(), "https://github.com/bloc97/Discord-BlocAPI", bot.getAvatarURL(), null);
+            //eo.title = "Help";
             
-            String finalString = 
-                    "Bot Help Commands\n" + 
-                    "!<command> --help (Help for a specific command)\n" +
-                    "!commands (Command list)\n" +
-                    "!modules (Modules list)\n";
-            e.getAuthor().getOrCreatePMChannel().sendMessage("```\n" + finalString + "```");
-            e.getAuthor().getOrCreatePMChannel().sendMessage(embed);
+            String finalString = "";
+            for (Addon addon : moduleLoader.getModuleByUid(-8461062l).getAddons()) {
+                finalString += addon.getShortHelp()+ "\n";
+            }
+            
+            EmbedFieldObject fo = new EmbedFieldObject("Help", finalString, false);
+            
+            eo.fields = new EmbedFieldObject[] {fo};
+            eo.color = getColour();
+            
+            e.getAuthor().getOrCreatePMChannel().sendMessage(eo);
             return true;
         } else {
             return false;

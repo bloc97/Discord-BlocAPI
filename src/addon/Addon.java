@@ -33,6 +33,9 @@ public interface Addon {
      * @return
      */
     public abstract String getShortHelp();
+    
+    public abstract int getColour();
+    
     public abstract short getUid();
     
     /**
@@ -52,7 +55,4 @@ public interface Addon {
      */
     public boolean isTrigger(IDiscordClient client, Event e);
     
-    public boolean trigger(IDiscordClient client, Event e);
-    public boolean triggerReady(IDiscordClient client, ReadyEvent e);
-    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e);
 }

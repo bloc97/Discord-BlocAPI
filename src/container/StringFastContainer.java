@@ -14,22 +14,22 @@ import java.util.List;
  *
  * @author bowen
  */
-public class StringPreviewContainer extends Container<String> {
+public class StringFastContainer extends Container<String> {
     
-    public StringPreviewContainer(String rawString) {
+    public StringFastContainer(String rawString) {
         this(rawString, ' ');
     }
     
-    public StringPreviewContainer(String rawString, String... prefixList) {
+    public StringFastContainer(String rawString, String... prefixList) {
         this(rawString, ' ', new PrefixSuffixCombo(prefixList));
     }
-    public StringPreviewContainer(String rawString, char separator) {
+    public StringFastContainer(String rawString, char separator) {
         this(rawString, separator, new PrefixSuffixCombo(""));
     }
-    public StringPreviewContainer(String rawString, char separator, String... prefixList) {
+    public StringFastContainer(String rawString, char separator, String... prefixList) {
         this(rawString, separator, new PrefixSuffixCombo(prefixList));
     }
-    public StringPreviewContainer(String rawString, char separator, PrefixSuffixCombo prefixSuffix) {
+    public StringFastContainer(String rawString, char separator, PrefixSuffixCombo prefixSuffix) {
         super(rawString, Arrays.asList(new PrefixSuffixCombo[] {prefixSuffix}));
         
         String trimmedString = getTrimmedString();

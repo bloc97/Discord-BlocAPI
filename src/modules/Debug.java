@@ -5,17 +5,76 @@
  */
 package modules;
 
+import addon.Addon;
 import dbot.Module;
+import helpers.Colour;
+import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IUser;
 
 /**
  *
  * @author bowen
  */
 public class Debug extends Module {
+    
+    public Debug() {
+        for (int n=0; n<50; n++) {
+            final int i = n;
+            add(new Addon() {
+                @Override
+                public String getName() {
+                    return "Debug Addon #" + i;
+                }
 
+                @Override
+                public String getDescription() {
+                    return "Debug Addon #" + i;
+                }
+
+                @Override
+                public String getFullHelp() {
+                    return "**!debug" + i + "** - *Debug Addon Full Help #" + i + "*";
+                }
+
+                @Override
+                public String getShortHelp() {
+                    return "**!debug" + i + "** - *Debug Addon Short Help #" + i + "*";
+                }
+
+                @Override
+                public int getColour() {
+                    return Colour.get3IntFromRGB(Math.random(), Math.random(), Math.random());
+                }
+
+                @Override
+                public short getUid() {
+                    return (short)i;
+                }
+
+                @Override
+                public boolean hasPermissions(IUser user, IChannel channel, IGuild guild) {
+                    return true;
+                }
+
+                @Override
+                public boolean isTrigger(IDiscordClient client, Event e) {
+                    if (e instanceof MessageReceivedEvent) {
+                        MessageReceivedEvent em = (MessageReceivedEvent) e;
+                        if (em.getMessage().getContent().startsWith("!debug" + i)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
+    }
+    
     @Override
     public String getFullName() {
         return "Debug Module";
@@ -53,7 +112,7 @@ public class Debug extends Module {
 
     @Override
     public long getUid() {
-        return 0;
+        return -24361349l;
     }
 
     @Override
