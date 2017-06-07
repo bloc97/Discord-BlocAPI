@@ -10,6 +10,15 @@ package helpers;
  * @author bowen
  */
 public abstract class TextFormatter {
+    
+    public static String repeatString(String s, int n) {
+        String string = "";
+        for (int i=0; i<n; i++) {
+            string += s;
+        }
+        return string;
+    }
+    
     public static String formatCapitalUnderscore(String s) {
         String string = "";
         String[] sArr = s.split("_");

@@ -5,6 +5,7 @@
  */
 package token;
 
+import helpers.ParserUtils;
 import container.StringContainer;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -18,33 +19,33 @@ import sx.blah.discord.handle.obj.IMessage;
  */
 public class ListToken extends Token<List<Token>> {
     private final List<Token> content;
-    public ListToken(String rawString) {
+    public ListToken(String rawString, Converter converter) {
         super(rawString);
         if (!isType(rawString)) {
             throw new IllegalArgumentException("Cannot parse string into a ListToken");
         }
         String string = rawString.substring(1, rawString.length() - 1);
-        List<String> stringArr = StringContainer.tokenizeAsString(string, new char[] {','});
+        List<String> stringArr = ParserUtils.tokenizeString(string, new char[] {','});
         LinkedList<Token> tempContent = new LinkedList();
         
         for (String s : stringArr) {
-            tempContent.add(Token.convertToToken(s.trim()));
+            tempContent.add(converter.convertToToken(s.trim()));
         }
         content = new ArrayList(tempContent);
         
     }
     
-    public ListToken(IDiscordClient client, IMessage message, String rawString) {
+    public ListToken(IDiscordClient client, IMessage message, String rawString, Converter converter) {
         super(rawString);
         if (!isType(rawString)) {
             throw new IllegalArgumentException("Cannot parse string into a ListToken");
         }
         String string = rawString.substring(1, rawString.length() - 1);
-        List<String> stringArr = StringContainer.tokenizeAsString(string, new char[] {','});
+        List<String> stringArr = ParserUtils.tokenizeString(string, new char[] {','});
         LinkedList<Token> tempContent = new LinkedList();
         
         for (String s : stringArr) {
-            tempContent.add(Token.convertToToken(client, message, s.trim()));
+            tempContent.add(converter.convertToToken(client, message, s.trim()));
         }
         content = new ArrayList(tempContent);
         

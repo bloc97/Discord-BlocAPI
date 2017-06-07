@@ -5,17 +5,15 @@
  */
 package container;
 
+import helpers.ParserUtils;
 import helpers.TextFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
  * @author bowen
+ * @param <T>
  */
 public abstract class Container<T> {
     protected int index = 0;
@@ -35,56 +33,41 @@ public abstract class Container<T> {
         this.trimmedString = trimmedString;
         
     }
-    protected Container(String rawString, String[] prefixList, String[] suffixList) {
+    protected Container(String rawString, PrefixSuffixCombo prefixSuffix) {
         this.index = 0;
         this.reverseIndex = 0;
         this.rawString = rawString;
-        this.prefix = findPrefixCaseless(rawString, prefixList);
-        this.suffix = findSuffixCaseless(rawString, suffixList);
         
-        String trimmedString = rawString;
-        if (!prefix.isEmpty()) {
-            trimmedString = trimmedString.substring(prefix.length());
+        if (prefixSuffix.check(rawString)) {
+            this.prefix = prefixSuffix.getPrefix(rawString);
+            this.suffix = prefixSuffix.getSuffix(rawString);
+            trimmedString = ParserUtils.trimPrefixSuffixLength(rawString, prefix.length(), suffix.length());
+        } else {
+            this.prefix = "";
+            this.suffix = "";
+            trimmedString = rawString;
         }
-        if (!suffix.isEmpty()) {
-            trimmedString = trimmedString.substring(0, trimmedString.length() - suffix.length());
-        }
-        this.trimmedString = trimmedString;
+    }
+    protected Container(String rawString, List<PrefixSuffixCombo> prefixSuffixList) {
+        this.index = 0;
+        this.reverseIndex = 0;
+        this.rawString = rawString;
         
-    }
-    public static String findPrefix(String string, String[] prefixList) {
-        for (String s : prefixList) {
-            if (string.startsWith(s)) {
-                return s;
+        PrefixSuffixCombo foundCombo = null;
+        for (PrefixSuffixCombo prefixSuffix : prefixSuffixList) { //Finds a valid PrefixSuffixCombo
+            if (prefixSuffix.check(rawString)) {
+                foundCombo = prefixSuffix;
             }
         }
-        return "";
-    }
-    public static String findPrefixCaseless(String string, String[] prefixList) {
-        for (String s : prefixList) {
-            s = s.toLowerCase(); //Do not care about case
-            if (string.toLowerCase().startsWith(s)) { //Do not care about case
-                return s;
-            }
+        if (foundCombo != null) {
+            this.prefix = foundCombo.getPrefix(rawString);
+            this.suffix = foundCombo.getSuffix(rawString);
+            trimmedString = ParserUtils.trimPrefixSuffixLength(rawString, prefix.length(), suffix.length());
+        } else {
+            this.prefix = "";
+            this.suffix = "";
+            trimmedString = rawString;
         }
-        return "";
-    }
-    public static String findSuffix(String string, String[] suffixList) {
-        for (String s : suffixList) {
-            if (string.endsWith(s)) {
-                return s;
-            }
-        }
-        return "";
-    }
-    public static String findSuffixCaseless(String string, String[] suffixList) {
-        for (String s : suffixList) {
-            s = s.toLowerCase(); //Do not care about case
-            if (string.toLowerCase().endsWith(s)) { //Do not care about case
-                return s;
-            }
-        }
-        return "";
     }
     
     public String getRawString() {

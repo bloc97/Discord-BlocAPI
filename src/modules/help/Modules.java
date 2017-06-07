@@ -5,10 +5,13 @@
  */
 package modules.help;
 
-import addon.MessageAddon;
-import container.UserCommand;
+import addon.Addon;
+import container.StringPreviewContainer;
+import dbot.Module;
+import dbot.ModuleLoader;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
+import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -18,61 +21,90 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author bowen
  */
-public class Modules implements MessageAddon {
+public class Modules implements Addon, LoaderAccessor {
 
-    @Override
-    public boolean isTrigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean trigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public String getFullName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "Modules Addon";
     }
 
     @Override
     public String getFullDescription() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "Displays the module list when called.";
     }
 
     @Override
     public String getFullHelp() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "!modules <page> - Displays the module list.";
     }
 
     @Override
     public String getShortName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "Modules";
     }
 
     @Override
     public String getShortHelp() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "!modules <page>";
     }
 
     @Override
     public short getUid() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return 2;
     }
 
     @Override
     public boolean hasPermissions(IUser user, IChannel channel, IGuild guild) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
     }
 
     @Override
     public boolean isTrigger(IDiscordClient client, Event e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (e instanceof MessageReceivedEvent) {
+            StringPreviewContainer c = new StringPreviewContainer(((MessageReceivedEvent)e).getMessage().getContent(), "!");
+            if (c.get().equalsIgnoreCase(client.getOurUser().getName())) {
+                c.next();
+            }
+            if (c.get().equalsIgnoreCase("modules")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean trigger(IDiscordClient client, Event e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    @Override
+    public boolean triggerReady(IDiscordClient client, ReadyEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, ModuleLoader moduleLoader) {
+        
+        StringPreviewContainer c = new StringPreviewContainer(e.getMessage().getContent(), "!");
+        if (c.get().equalsIgnoreCase(client.getOurUser().getName())) {
+            c.next();
+        }
+        if (c.get().equalsIgnoreCase("modules")) {
+            String finalString = "";
+            for (Module module : moduleLoader.getEnabledModules()) {
+                finalString += module.getShortName() + " v" + module.getVersion() + " (by " + module.getAuthor() + ") - " + module.getShortDescription()+ "\n";
+            }
+            e.getChannel().sendMessage("```\n" + finalString + "```");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

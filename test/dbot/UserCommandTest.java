@@ -5,7 +5,7 @@
  */
 package dbot;
 
-import container.UserCommand;
+import dbot.UserCommand;
 import helpers.TextFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;

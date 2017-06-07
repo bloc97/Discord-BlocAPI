@@ -5,9 +5,6 @@
  */
 package token;
 
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.obj.IMessage;
-
 /**
  *
  * @author bowen
@@ -15,31 +12,6 @@ import sx.blah.discord.handle.obj.IMessage;
  */
 public abstract class Token<T> {
 
-    public static Token convertToToken(String token) {
-        if (ListToken.isType(token)) {
-            return new ListToken(token);
-        } else if (DateToken.isType(token)) {
-            return new DateToken(token);
-        } else if (NumberToken.isType(token)) {
-            return new NumberToken(token);
-        } else {
-            return new StringToken(token);
-        }
-    }
-
-    public static Token convertToToken(IDiscordClient client, IMessage message, String token) {
-        if (ListToken.isType(token)) {
-            return new ListToken(token);
-        } else if (DateToken.isType(token)) {
-            return new DateToken(token);
-        } else if (MentionToken.isType(token)) {
-            return new MentionToken(client, message, token);
-        } else if (NumberToken.isType(token)) {
-            return new NumberToken(token);
-        } else {
-            return new StringToken(token);
-        }
-    }
     private final String rawString;
     protected Token(String rawString) {
         this.rawString = rawString;

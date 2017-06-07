@@ -1,4 +1,4 @@
-package container;
+package dbot;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -151,6 +151,8 @@ public class UserCommand {
         //System.out.println(Arrays.toString(content.toArray(new String[0])));
         
         
+        this.flags = new HashSet();
+        parameters = new HashMap();
     }
     
     public List<String> getContent() {

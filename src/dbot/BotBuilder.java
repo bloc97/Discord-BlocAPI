@@ -5,6 +5,7 @@
  */
 package dbot;
 
+import helpers.TextFormatter;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -18,21 +19,25 @@ import sx.blah.discord.util.DiscordException;
  *
  * @author bowen
  */
-public class Main {
-    /**
-     * @param args the command line arguments
-     * @throws java.io.IOException
-     */
-    public static void main(String[] args) throws IOException {
-        Path path = FileSystems.getDefault().getPath("dapi.key");
-        String dApiKey = Files.readAllLines(path).get(0);
-        
-        System.out.println("Discord Bot API Key: " + dApiKey);
+public abstract class BotBuilder {
+    
+    public static void buildBot(ModuleLoader moduleLoader) {
+        String dApiKey = "";
+        try {
+            Path path = FileSystems.getDefault().getPath("dapi.key");
+            dApiKey = Files.readAllLines(path).get(0);
+
+            int showLength = Math.min(16, dApiKey.length()/2);
+            System.out.println("Discord Bot API Key: " + dApiKey.substring(0, showLength) + TextFormatter.repeatString("*", dApiKey.length() - showLength));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return;
+        }
         
         IDiscordClient bot = createClient(dApiKey, true);
         
         EventDispatcher botDispatcher = bot.getDispatcher();
-        botDispatcher.registerListener(new ModuleLoader());
+        botDispatcher.registerListener(moduleLoader);
         
     }
     
@@ -51,5 +56,4 @@ public class Main {
             return null;
         }
     }
-    
 }

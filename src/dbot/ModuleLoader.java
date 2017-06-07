@@ -5,19 +5,16 @@
  */
 package dbot;
 
-import container.UserCommand;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import modules.Debug;
 import modules.Help;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IMessage;
 
 /**
  *
@@ -37,6 +34,7 @@ public class ModuleLoader {
             add(module);
         }
         add(new Help());
+        add(new Debug());
     }
     
     public final void add(Module module) {
@@ -108,76 +106,33 @@ public class ModuleLoader {
     
     @EventSubscriber
     public void onEvent(Event e) {
+        
+        LinkedList<Module> erronousModules = null;
+        
+        for (Module module : modules) {
+            try {
+                if (module.onEvent(e)) {
+                    break;
+                }
+            } catch (Exception ex) {
+                if (erronousModules == null) {
+                    erronousModules = new LinkedList<>();
+                }
+                erronousModules.add(module);
+                ex.printStackTrace();
+                System.out.println(module.getShortName() + " Module Error: " + ex);
+            }
+        }
+        
+        if (erronousModules != null) {
+            erronousModules.forEach((module) -> {
+                disable(module);
+            });
+        }
+
         if (e instanceof ReadyEvent) {
-            return;
+            System.out.println("Bot Ready.");
         }
-        if (e instanceof MessageReceivedEvent) {
-            return;
-        }
-        
-        LinkedList<Module> erronousModules = new LinkedList<>();
-        
-        modules.forEach((module) -> {
-            try {
-                module.onEvent(e);
-            } catch (Exception ex) {
-                erronousModules.add(module);
-                ex.printStackTrace();
-                System.out.println(module.getShortName() + " Module Error: " + ex);
-                System.out.println("Disabling " + module.getShortName() + " Module.");
-            }
-        });
-        
-        erronousModules.forEach((module) -> {
-            disable(module);
-        });
+
     }
-    @EventSubscriber
-    public void onReady(ReadyEvent e) {
-        System.out.println("Bot Ready.");
-        //e.getClient().online("Not Connected");
-        LinkedList<Module> erronousModules = new LinkedList<>();
-        
-        modules.forEach((module) -> {
-            try {
-                module.ready(e);
-                System.out.println(module.getShortName() + " Module Ready.");
-            } catch (Exception ex) {
-                erronousModules.add(module);
-                ex.printStackTrace();
-                System.out.println(module.getShortName() + " Module Error: " + ex);
-                System.out.println("Disabling " + module.getShortName() + " Module.");
-            }
-        });
-        
-        erronousModules.forEach((module) -> {
-            disable(module);
-        });
-        
-        //bot.online("League of Legends Dev API");
-    }
-    @EventSubscriber
-    public void onMessageReceived(MessageReceivedEvent e) {
-        IMessage message = e.getMessage();
-        UserCommand command = new UserCommand(message.getContent());
-        
-        LinkedList<Module> erronousModules = new LinkedList<>();
-        
-        modules.forEach((module) -> {
-            try {
-                module.onMessage(e, command.clone());
-            } catch (Exception ex) {
-                erronousModules.add(module);
-                ex.printStackTrace();
-                System.out.println(module.getShortName() + " Module Error: " + ex);
-                System.out.println("Disabling " + module.getShortName() + " Module.");
-            }
-        });
-        
-        erronousModules.forEach((module) -> {
-            disable(module);
-        });
-        
-    }
-    
 }

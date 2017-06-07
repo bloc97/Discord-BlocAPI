@@ -5,7 +5,7 @@
  */
 package container;
 
-import helpers.TextFormatter;
+import helpers.ParserUtils;
 import java.util.List;
 
 /**
@@ -14,28 +14,17 @@ import java.util.List;
  */
 public class ParameterStringContainer extends StringContainer {
     
-    public ParameterStringContainer(List<String> content) {
-        this(content, new char[] {' '});
-    }
-    public ParameterStringContainer(List<String> content, char[] separatorList) {
-        this(untokenizeAsString(content, separatorList), content);
-    }
     private ParameterStringContainer(String rawString, List<String> content) {
         super(rawString, rawString.substring(2), content, "--", "");
     }
     private ParameterStringContainer(int index, int reverseIndex, String rawString, List<String> content) {
         super(index, reverseIndex, rawString, rawString.substring(2), content, "--", "");
     }
-    public static String untokenizeAsString(List<String> content, char[] separatorList) {
-        String string = "--";
-        for (String s : content) {
-            if (TextFormatter.containsCharacter(s, separatorList)) {
-                string = string + " \"" + s + "\"";
-            } else {
-                string = string + " " + s;
-            }
-        }
-        return string;
+    public ParameterStringContainer(List<String> content) {
+        this(content, new char[] {' '});
+    }
+    public ParameterStringContainer(List<String> content, char[] separatorList) {
+        this(ParserUtils.untokenizeString(content, separatorList), content);
     }
     public ParameterStringContainer clone() {
         return new ParameterStringContainer(index, reverseIndex, getRawString(), getContent());

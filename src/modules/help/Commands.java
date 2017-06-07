@@ -5,10 +5,15 @@
  */
 package modules.help;
 
-import addon.MessageAddon;
-import container.UserCommand;
+import addon.Addon;
+import container.StringPreviewContainer;
+import dbot.Module;
+import dbot.ModuleLoader;
+import java.util.List;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
+import sx.blah.discord.handle.impl.events.ReadyEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -18,17 +23,7 @@ import sx.blah.discord.handle.obj.IUser;
  *
  * @author bowen
  */
-public class Commands implements MessageAddon {
-
-    @Override
-    public boolean isTrigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean trigger(IDiscordClient client, MessageReceivedEvent e, UserCommand c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+public class Commands implements Addon, LoaderAccessor {
 
     @Override
     public String getFullName() {
@@ -64,15 +59,56 @@ public class Commands implements MessageAddon {
     public boolean hasPermissions(IUser user, IChannel channel, IGuild guild) {
         return true;
     }
-
+    
     @Override
     public boolean isTrigger(IDiscordClient client, Event e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (e instanceof MessageReceivedEvent) {
+            StringPreviewContainer c = new StringPreviewContainer(((MessageReceivedEvent)e).getMessage().getContent(), "!");
+            if (c.get().equalsIgnoreCase(client.getOurUser().getName())) {
+                c.next();
+            }
+            if (c.get().equalsIgnoreCase("commands")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean trigger(IDiscordClient client, Event e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean triggerReady(IDiscordClient client, ReadyEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, ModuleLoader moduleLoader) {
+        
+        StringPreviewContainer c = new StringPreviewContainer(e.getMessage().getContent(), "!");
+        if (c.get().equalsIgnoreCase(client.getOurUser().getName())) {
+            c.next();
+        }
+        if (c.get().equalsIgnoreCase("commands")) {
+            String finalString = "";
+            for (Module module : moduleLoader.getEnabledModules()) {
+                for (Addon addon : module.getAddons()) {
+                    finalString += addon.getShortHelp() + "\n";
+                }
+            }
+            e.getChannel().sendMessage("```\n" + finalString + "```");
+            return true;
+        } else {
+            return false;
+        }
+        
     }
     
 }

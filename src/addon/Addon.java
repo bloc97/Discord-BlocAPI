@@ -7,6 +7,8 @@ package addon;
 
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
+import sx.blah.discord.handle.impl.events.ReadyEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
@@ -14,19 +16,44 @@ import sx.blah.discord.handle.obj.IUser;
 /**
  *
  * @author bowen
- * @param <T>
  */
-public interface Addon <T extends Event> {
+public interface Addon {
     
     public abstract String getFullName();
     public abstract String getFullDescription();
+    
+    /**
+     * Returns a full help page, used by the default Help addon.
+     * @return
+     */
     public abstract String getFullHelp();
     public abstract String getShortName();
+
+    /**
+     * Returns a single help sentence, used by the default Commands addon.
+     * @return
+     */
     public abstract String getShortHelp();
     public abstract short getUid();
     
+    /**
+     * Determines if addon should be shown. Used for displaying the help page.
+     * @param user
+     * @param channel
+     * @param guild
+     * @return
+     */
     public abstract boolean hasPermissions(IUser user, IChannel channel, IGuild guild);
     
-    public boolean isTrigger(IDiscordClient client, T e);
-    public boolean trigger(IDiscordClient client, T e);
+    /**
+     * Determines if addon should be triggered. Used for displaying the help page.
+     * @param client
+     * @param e
+     * @return
+     */
+    public boolean isTrigger(IDiscordClient client, Event e);
+    
+    public boolean trigger(IDiscordClient client, Event e);
+    public boolean triggerReady(IDiscordClient client, ReadyEvent e);
+    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e);
 }

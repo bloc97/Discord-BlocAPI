@@ -5,11 +5,11 @@
  */
 package dbot;
 
-import container.UserCommand;
 import addon.Addon;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.LinkedHashSet;
+import java.util.List;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
@@ -27,6 +27,9 @@ public abstract class Module {
     private boolean isLoaded = false;
     private int id = -1;
     
+    public Module() {
+        addons = new LinkedList<>();
+    }
     public Module(Addon... addonsList) {
         addons = new LinkedList<>();
         addons.addAll(Arrays.asList(addonsList));
@@ -35,6 +38,10 @@ public abstract class Module {
         if (!addons.contains(addon)) {
             addons.add(addon);
         }
+    }
+    
+    public List<Addon> getAddons() {
+        return new ArrayList(addons);
     }
     
     public int getId() {
@@ -58,6 +65,7 @@ public abstract class Module {
             this.moduleLoader = moduleLoader;
             this.id = id;
             isLoaded = true;
+            System.out.println("Module [" + getShortName() + "] Enabled.");
         }
     }
     
@@ -69,6 +77,7 @@ public abstract class Module {
             this.moduleLoader = null;
             this.id = -1;
             isLoaded = false;
+            System.out.println("Module [" + getShortName() + "] Disabled.");
         } else {
             throw new IllegalStateException("Wrong ID or ModuleLoader!, only the original ModuleLoader can unload this module.");
         }
@@ -85,14 +94,27 @@ public abstract class Module {
     public abstract String getAuthor();
     public abstract long getUid();
     
+    
+    public boolean onEvent(Event e) {
+        if (e instanceof ReadyEvent) {
+            ready((ReadyEvent) e);
+            return false;
+        } else if (e instanceof MessageReceivedEvent) {
+            return onMessage((MessageReceivedEvent) e);
+        } else {
+            return onOtherEvent(e);
+        }
+    };
+    
     public void ready(ReadyEvent e) {
         botClient = e.getClient();
+        System.out.println("Module [" + getShortName() + "] Ready.");
         onReady(e);
     }
     
-    public abstract void onEvent(Event e);
-    public abstract void onReady(ReadyEvent e);
-    public abstract void onMessage(MessageReceivedEvent e, UserCommand c);
+    public abstract boolean onOtherEvent(Event e);
+    public abstract boolean onReady(ReadyEvent e);
+    public abstract boolean onMessage(MessageReceivedEvent e);
     
     
 }

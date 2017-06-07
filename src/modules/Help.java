@@ -6,10 +6,11 @@
 package modules;
 
 import addon.Addon;
-import addon.MessageAddon;
+import container.StringPreviewContainer;
 import dbot.Module;
-import container.UserCommand;
+import dbot.ModuleLoader;
 import modules.help.Commands;
+import modules.help.LoaderAccessor;
 import modules.help.Modules;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
@@ -20,9 +21,8 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
  * @author bowen
  */
 public class Help extends Module {
-
-    public Help(Addon... addonsList) {
-        super(addonsList);
+    
+    public Help() {
         add(new modules.help.Help());
         add(new Commands());
         add(new Modules());
@@ -69,33 +69,40 @@ public class Help extends Module {
     }
 
     @Override
-    public void onEvent(Event e) {
-        for (Addon addon : addons) {
-            addon.trigger(botClient, e);
-        }
+    public boolean onOtherEvent(Event e) {
+        return false;
     }
 
     @Override
-    public void onReady(ReadyEvent e) {
-        System.out.println(getShortName() + " Module Enabled.");
+    public boolean onReady(ReadyEvent e) {
+        return false;
     }
 
     @Override
-    public void onMessage(MessageReceivedEvent e, UserCommand c) {
+    public boolean onMessage(MessageReceivedEvent e) {
         if (e.getAuthor().isBot()) {
-            return;
+            return false;
         }
-        if (!(e.getChannel().isPrivate() || c.get().equalsIgnoreCase(botClient.getOurUser().getName()) || e.getMessage().getMentions().contains(botClient.getOurUser()))) {
-            return;
-        }
-        c.next();
-        for (Addon addon : addons) {
-            if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
-                if (addon instanceof MessageAddon) {
-                    ((MessageAddon) addon).trigger(botClient, e, c.clone());
+        StringPreviewContainer c = new StringPreviewContainer(e.getMessage().getContent(), "!");
+        
+        //if (!(e.getChannel().isPrivate() || c.get().equalsIgnoreCase(botClient.getOurUser().getName()) || e.getMessage().getMentions().contains(botClient.getOurUser()))) {
+            //return;
+        //} 
+        if (e.getChannel().isPrivate() || c.get().equalsIgnoreCase(botClient.getOurUser().getName()) || (e.getMessage().getMentions() != null && e.getMessage().getMentions().contains(botClient.getOurUser()))) {
+            for (Addon addon : addons) {
+                if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
+                    //if (addon.isTrigger(botClient, e)) {
+
+                    LoaderAccessor la = (LoaderAccessor) addon;
+                    if (la.triggerMessage(botClient, e, getModuleLoader())) {
+                        return true;
+                    }
+                    //}
                 }
             }
         }
+        return false;
     }
+
     
 }
