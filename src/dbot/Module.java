@@ -85,7 +85,7 @@ public abstract class Module {
     
     public abstract String getFullName();
     public abstract String getFullDescription();
-    public abstract String getFullHelp();
+    public abstract String getFullInfo();
     
     public abstract String getShortName();
     public abstract String getShortDescription();

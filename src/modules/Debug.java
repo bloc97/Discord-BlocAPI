@@ -27,7 +27,7 @@ public class Debug extends Module {
     }
 
     @Override
-    public String getFullHelp() {
+    public String getFullInfo() {
         return "";
     }
 

@@ -25,12 +25,12 @@ public class Modules implements Addon, LoaderAccessor {
 
 
     @Override
-    public String getFullName() {
-        return "Modules Addon";
+    public String getName() {
+        return "Modules";
     }
 
     @Override
-    public String getFullDescription() {
+    public String getDescription() {
         return "Displays the module list when called.";
     }
 
@@ -38,12 +38,7 @@ public class Modules implements Addon, LoaderAccessor {
     public String getFullHelp() {
         return "!modules <page> - Displays the module list.";
     }
-
-    @Override
-    public String getShortName() {
-        return "Modules";
-    }
-
+    
     @Override
     public String getShortHelp() {
         return "!modules <page>";
@@ -75,17 +70,17 @@ public class Modules implements Addon, LoaderAccessor {
 
     @Override
     public boolean trigger(IDiscordClient client, Event e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean triggerReady(IDiscordClient client, ReadyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

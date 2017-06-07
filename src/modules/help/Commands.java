@@ -26,23 +26,18 @@ import sx.blah.discord.handle.obj.IUser;
 public class Commands implements Addon, LoaderAccessor {
 
     @Override
-    public String getFullName() {
-        return "Commands Addon";
+    public String getName() {
+        return "Commands";
     }
 
     @Override
-    public String getFullDescription() {
+    public String getDescription() {
         return "Displays the command list when called.";
     }
 
     @Override
     public String getFullHelp() {
         return "!commands <page> - Displays the command list.";
-    }
-
-    @Override
-    public String getShortName() {
-        return "Commands";
     }
 
     @Override
@@ -76,17 +71,17 @@ public class Commands implements Addon, LoaderAccessor {
 
     @Override
     public boolean trigger(IDiscordClient client, Event e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean triggerReady(IDiscordClient client, ReadyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     @Override

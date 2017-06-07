@@ -19,15 +19,14 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public interface Addon {
     
-    public abstract String getFullName();
-    public abstract String getFullDescription();
+    public abstract String getName();
+    public abstract String getDescription();
     
     /**
      * Returns a full help page, used by the default Help addon.
      * @return
      */
     public abstract String getFullHelp();
-    public abstract String getShortName();
 
     /**
      * Returns a single help sentence, used by the default Commands addon.

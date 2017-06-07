@@ -24,12 +24,12 @@ import sx.blah.discord.handle.obj.IUser;
 public class Help implements Addon, LoaderAccessor {
 
     @Override
-    public String getFullName() {
-        return "Help Addon";
+    public String getName() {
+        return "Help";
     }
 
     @Override
-    public String getFullDescription() {
+    public String getDescription() {
         return "Automatically generates help templates for loaded addons.";
     }
 
@@ -38,12 +38,7 @@ public class Help implements Addon, LoaderAccessor {
         return "!help - Displays the main help page\n" +
                 "!<command> --help - Displays help for specific command";
     }
-
-    @Override
-    public String getShortName() {
-        return "Help";
-    }
-
+    
     @Override
     public String getShortHelp() {
         return "!help";
@@ -75,17 +70,17 @@ public class Help implements Addon, LoaderAccessor {
 
     @Override
     public boolean trigger(IDiscordClient client, Event e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean triggerReady(IDiscordClient client, ReadyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -108,12 +103,14 @@ public class Help implements Addon, LoaderAccessor {
             c.next();
         }
         if (c.get().equalsIgnoreCase("help")) {
+            
             String finalString = 
                     "Bot Help Commands\n" + 
                     "!<command> --help (Help for a specific command)\n" +
                     "!commands (Command list)\n" +
                     "!modules (Modules list)\n";
             e.getAuthor().getOrCreatePMChannel().sendMessage("```\n" + finalString + "```");
+            e.getAuthor().getOrCreatePMChannel().sendMessage(embed);
             return true;
         } else {
             return false;

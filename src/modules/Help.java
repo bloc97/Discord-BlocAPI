@@ -39,7 +39,7 @@ public class Help extends Module {
     }
 
     @Override
-    public String getFullHelp() {
+    public String getFullInfo() {
         return "";
     }
 
