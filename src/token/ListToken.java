@@ -6,12 +6,11 @@
 package token;
 
 import helpers.ParserUtils;
-import container.StringContainer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 /**
  *
@@ -35,7 +34,7 @@ public class ListToken extends Token<List<Token>> {
         
     }
     
-    public ListToken(IDiscordClient client, IMessage message, String rawString, Converter converter) {
+    public ListToken(IDiscordClient client, MessageReceivedEvent event, String rawString, Converter converter) {
         super(rawString);
         if (!isType(rawString)) {
             throw new IllegalArgumentException("Cannot parse string into a ListToken");
@@ -45,7 +44,7 @@ public class ListToken extends Token<List<Token>> {
         LinkedList<Token> tempContent = new LinkedList();
         
         for (String s : stringArr) {
-            tempContent.add(converter.convertToToken(client, message, s.trim()));
+            tempContent.add(converter.convertToToken(client, event, s.trim()));
         }
         content = new ArrayList(tempContent);
         

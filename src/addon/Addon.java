@@ -5,6 +5,7 @@
  */
 package addon;
 
+import container.detector.TokenDetectorContainer;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
@@ -19,24 +20,26 @@ import sx.blah.discord.handle.obj.IUser;
  */
 public interface Addon {
     
-    public abstract String getName();
-    public abstract String getDescription();
+    public String getName();
+    public String getDescription();
     
     /**
      * Returns a full help page, used by the default Help addon.
      * @return
      */
-    public abstract String getFullHelp();
+    public String getFullHelp();
 
     /**
      * Returns a single help sentence, used by the default Commands addon.
      * @return
      */
-    public abstract String getShortHelp();
+    public String getShortHelp();
     
-    public abstract int getColour();
+    public int getColour();
     
-    public abstract short getUid();
+    public short getUid();
+    
+    public TokenDetectorContainer getTriggerDetector();
     
     /**
      * Determines if addon should be shown. Used for displaying the help page.
@@ -45,14 +48,7 @@ public interface Addon {
      * @param guild
      * @return
      */
-    public abstract boolean hasPermissions(IUser user, IChannel channel, IGuild guild);
+    public boolean hasPermissions(IUser user, IChannel channel, IGuild guild);
     
-    /**
-     * Determines if addon should be triggered. Used for displaying the help page.
-     * @param client
-     * @param e
-     * @return
-     */
-    public boolean isTrigger(IDiscordClient client, Event e);
     
 }

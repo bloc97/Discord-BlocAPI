@@ -38,10 +38,11 @@ public class StringFastContainer extends Container<String> {
         }
         setContent(Arrays.asList(trimmedString.split("" + separator)));
     }
+    /*
     StringAdvancedContainer getFull() {
         return this.getFull(new char[] {' '});
     }
     StringAdvancedContainer getFull(char[] separatorList) {
         return new StringAdvancedContainer(getRawString(), separatorList, getPrefix(), getSuffix());
-    }
+    }*/
 }

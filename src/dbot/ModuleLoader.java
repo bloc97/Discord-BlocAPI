@@ -34,7 +34,6 @@ public class ModuleLoader {
             add(module);
         }
         add(new Help());
-        add(new Debug());
     }
     
     public final void add(Module module) {

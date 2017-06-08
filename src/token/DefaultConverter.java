@@ -6,6 +6,7 @@
 package token;
 
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IMessage;
 
 /**
@@ -26,13 +27,13 @@ public class DefaultConverter implements Converter {
     }
 
     @Override
-    public Token convertToToken(IDiscordClient client, IMessage message, String token) {
+    public Token convertToToken(IDiscordClient client, MessageReceivedEvent event, String token) {
         if (ListToken.isType(token)) {
             return new ListToken(token, this);
         } else if (DateToken.isType(token)) {
             return new DateToken(token);
         } else if (MentionToken.isType(token)) {
-            return new MentionToken(client, message, token);
+            return new MentionToken(client, event.getMessage(), token);
         } else {
             return Converter.convertToPrimitiveToken(token);
         }

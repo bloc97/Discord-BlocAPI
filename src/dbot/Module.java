@@ -6,6 +6,9 @@
 package dbot;
 
 import addon.Addon;
+import container.ContainerSettings;
+import container.StringAdvancedContainer;
+import container.TokenContainer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -14,6 +17,7 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import token.Converter;
 
 /**
  *
@@ -94,13 +98,23 @@ public abstract class Module {
     public abstract String getAuthor();
     public abstract long getUid();
     
+    public abstract BotCommandTrigger getCommandTrigger();
+    public abstract ContainerSettings getContainerSettings();
+    public abstract Converter getTokenConverter();
     
     public boolean onEvent(Event e) {
         if (e instanceof ReadyEvent) {
             ready((ReadyEvent) e);
             return false;
         } else if (e instanceof MessageReceivedEvent) {
-            return onMessage((MessageReceivedEvent) e);
+            MessageReceivedEvent em = (MessageReceivedEvent) e;
+            BotCommandTrigger commandTrigger = getCommandTrigger();
+            if (commandTrigger.isMessageTrigger(botClient, em)) {
+                String rawString = commandTrigger.preParse(botClient, em);
+                TokenContainer container = new TokenContainer(botClient, em, new StringAdvancedContainer(rawString, getContainerSettings()), getTokenConverter());
+                return onMessage(em, container);
+            }
+            return false;
         } else {
             return onOtherEvent(e);
         }
@@ -114,7 +128,7 @@ public abstract class Module {
     
     public abstract boolean onOtherEvent(Event e);
     public abstract boolean onReady(ReadyEvent e);
-    public abstract boolean onMessage(MessageReceivedEvent e);
+    public abstract boolean onMessage(MessageReceivedEvent e, TokenContainer container);
     
     
 }

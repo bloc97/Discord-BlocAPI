@@ -7,6 +7,10 @@ package modules.help;
 
 import addon.Addon;
 import container.StringFastContainer;
+import container.TokenContainer;
+import container.detector.TokenContentDetector;
+import container.detector.TokenDetectorContainer;
+import container.detector.TokenStringDetector;
 import dbot.Module;
 import dbot.ModuleLoader;
 import helpers.ParserUtils;
@@ -21,6 +25,8 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
+import token.StringToken;
+import token.Token;
 
 /**
  *
@@ -62,21 +68,16 @@ public class Commands implements Addon, HelpAddon {
     public boolean hasPermissions(IUser user, IChannel channel, IGuild guild) {
         return true;
     }
-    
-    @Override
-    public boolean isTrigger(IDiscordClient client, Event e) {
-        if (e instanceof MessageReceivedEvent) {
-            MessageReceivedEvent em = (MessageReceivedEvent) e;
-            String rawString = em.getMessage().getContent();
-            String botName = client.getOurUser().getName();
-            String commandName = "commands";
-            return ParserUtils.startsWithCaseless(rawString, "!" + botName + " " + commandName) || ParserUtils.startsWithCaseless(rawString, "!" + commandName) ;
-        }
-        return false;
-    }
 
     @Override
-    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, ModuleLoader moduleLoader) {
+    public TokenDetectorContainer getTriggerDetector() {
+        return new TokenDetectorContainer(
+            new TokenStringDetector("commands")
+        );
+    }
+    
+    @Override
+    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenContainer container, ModuleLoader moduleLoader) {
         
         StringFastContainer c = new StringFastContainer(e.getMessage().getContent(), "!");
         if (c.get().equalsIgnoreCase(client.getOurUser().getName())) {

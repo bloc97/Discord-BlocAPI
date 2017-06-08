@@ -7,6 +7,9 @@ package modules.help;
 
 import addon.Addon;
 import container.StringFastContainer;
+import container.TokenContainer;
+import container.detector.TokenDetectorContainer;
+import container.detector.TokenStringDetector;
 import dbot.Module;
 import dbot.ModuleLoader;
 import helpers.ParserUtils;
@@ -60,21 +63,16 @@ public class Modules implements Addon, HelpAddon {
     public boolean hasPermissions(IUser user, IChannel channel, IGuild guild) {
         return true;
     }
-
+    
     @Override
-    public boolean isTrigger(IDiscordClient client, Event e) {
-        if (e instanceof MessageReceivedEvent) {
-            MessageReceivedEvent em = (MessageReceivedEvent) e;
-            String rawString = em.getMessage().getContent();
-            String botName = client.getOurUser().getName();
-            String commandName = "modules";
-            return ParserUtils.startsWithCaseless(rawString, "!" + botName + " " + commandName) || ParserUtils.startsWithCaseless(rawString, "!" + commandName) ;
-        }
-        return false;
+    public TokenDetectorContainer getTriggerDetector() {
+        return new TokenDetectorContainer(
+            new TokenStringDetector("help")
+        );
     }
 
     @Override
-    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, ModuleLoader moduleLoader) {
+    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenContainer container, ModuleLoader moduleLoader) {
         
         StringFastContainer c = new StringFastContainer(e.getMessage().getContent(), "!");
         if (c.get().equalsIgnoreCase(client.getOurUser().getName())) {

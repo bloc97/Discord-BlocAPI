@@ -24,37 +24,14 @@ public class StringAdvancedContainer extends StringContainer {
     private final Set<String> flags; //flags start with -, eg -f, -l, -help, but the - is not saved in the string
     private final List<ParameterStringContainer> parameters; //parameters start with --, and ends until another parameter or flag is detected or end of string, eg --get 123
     
-    
-    public StringAdvancedContainer(String trimmedString, char[] separatorList, String prefix, String suffix) {
-        super(trimmedString, separatorList, prefix, suffix);
+    public StringAdvancedContainer(String rawString, ContainerSettings settings) {
+        super(rawString, settings);
         
         flags = new HashSet();
         parameters = new LinkedList();
         List<String> content = getContent();
         
-        setContent(ParserUtils.retrieveParameters(content, separatorList, flags, parameters));
-    }
-    
-    public StringAdvancedContainer(String rawString) {
-        this(rawString, ' ', "");
-    }
-    public StringAdvancedContainer(String rawString, String... prefixList) {
-        this(rawString, ' ', prefixList);
-    }
-    public StringAdvancedContainer(String rawString, char separator, String... prefixList) {
-        this(rawString, separator, new PrefixSuffixCombo(prefixList));
-    }
-    public StringAdvancedContainer(String rawString, char separator, PrefixSuffixCombo prefixSuffix) {
-        this(rawString, new char[] {separator}, Arrays.asList(new PrefixSuffixCombo[] {prefixSuffix}));
-    }
-    public StringAdvancedContainer(String rawString, char[] separatorList, List<PrefixSuffixCombo> prefixSuffixList) {
-        super(rawString, separatorList, prefixSuffixList);
-        
-        flags = new HashSet();
-        parameters = new LinkedList();
-        List<String> content = getContent();
-        
-        setContent(ParserUtils.retrieveParameters(content, separatorList, flags, parameters));
+        setContent(ParserUtils.retrieveParameters(content, settings.getSeparatorList(), flags, parameters));
         
     }
     
@@ -74,6 +51,6 @@ public class StringAdvancedContainer extends StringContainer {
         }
         List<String> emptyParameter = new LinkedList();
         emptyParameter.add(parameter);
-        return new ParameterStringContainer(emptyParameter);
+        return new ParameterStringContainer(emptyParameter, new char[0]);
     }
 }

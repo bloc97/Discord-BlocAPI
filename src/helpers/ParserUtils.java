@@ -5,7 +5,6 @@
  */
 package helpers;
 
-import container.StringFastContainer;
 import container.StringAdvancedContainer;
 import container.ParameterStringContainer;
 import container.StringContainer;

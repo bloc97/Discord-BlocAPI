@@ -6,7 +6,11 @@
 package modules;
 
 import addon.Addon;
+import container.ContainerSettings;
 import container.StringFastContainer;
+import container.TokenContainer;
+import dbot.BotCommandDefaultTrigger;
+import dbot.BotCommandTrigger;
 import dbot.Module;
 import dbot.ModuleLoader;
 import modules.help.Commands;
@@ -15,15 +19,17 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import token.Converter;
+import token.DefaultConverter;
 
 /**
  *
  * @author bowen
  */
 public class Help extends Module {
-    
+
     public interface HelpAddon {
-        public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, ModuleLoader moduleLoader);
+        public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenContainer container, ModuleLoader moduleLoader);
     }
     
     public Help() {
@@ -71,6 +77,21 @@ public class Help extends Module {
     public long getUid() {
         return -8461062l;
     }
+    
+    @Override
+    public BotCommandTrigger getCommandTrigger() {
+        return new BotCommandDefaultTrigger();
+    }
+
+    @Override
+    public ContainerSettings getContainerSettings() {
+        return ContainerSettings.buildSettings("!");
+    }
+
+    @Override
+    public Converter getTokenConverter() {
+        return new DefaultConverter();
+    }
 
     @Override
     public boolean onOtherEvent(Event e) {
@@ -83,26 +104,18 @@ public class Help extends Module {
     }
 
     @Override
-    public boolean onMessage(MessageReceivedEvent e) {
-        if (e.getAuthor().isBot()) {
-            return false;
-        }
-        StringFastContainer c = new StringFastContainer(e.getMessage().getContent(), "!");
+    public boolean onMessage(MessageReceivedEvent e, TokenContainer container) {
         
-        if (!(e.getChannel().isPrivate() || c.get().equalsIgnoreCase(botClient.getOurUser().getName()) || e.getMessage().getMentions().contains(botClient.getOurUser()))) {
-            return false;
-        } 
-        //if (e.getChannel().isPrivate() || c.get().equalsIgnoreCase(botClient.getOurUser().getName()) || (e.getMessage().getMentions() != null && e.getMessage().getMentions().contains(botClient.getOurUser()))) {
         for (Addon addon : addons) {
             if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
 
                 HelpAddon ha = (HelpAddon) addon;
-                if (ha.triggerMessage(botClient, e, getModuleLoader())) {
+                if (ha.triggerMessage(botClient, e, container, getModuleLoader())) {
                     return true;
                 }
+                container.reset();
             }
         }
-        //}
         return false;
     }
 

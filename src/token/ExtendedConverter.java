@@ -6,6 +6,7 @@
 package token;
 
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IMessage;
 
 /**
@@ -26,15 +27,15 @@ public abstract class ExtendedConverter implements Converter {
     }
 
     @Override
-    public Token convertToToken(IDiscordClient client, IMessage message, String token) {
+    public Token convertToToken(IDiscordClient client, MessageReceivedEvent event, String token) {
         if (isExtendedType(token)) {
-            return convertToTokenExtended(client, message, token);
+            return convertToTokenExtended(client, event, token);
         } else {
-            return defaultConverter.convertToToken(client, message, token);
+            return defaultConverter.convertToToken(client, event, token);
         }
     }
     
     public abstract boolean isExtendedType(String token);
     public abstract Token convertToTokenExtended(String token);
-    public abstract Token convertToTokenExtended(IDiscordClient client, IMessage message, String token);
+    public abstract Token convertToTokenExtended(IDiscordClient client, MessageReceivedEvent event, String token);
 }

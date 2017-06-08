@@ -16,8 +16,8 @@ import java.util.List;
  */
 public class StringContainer extends Container<String> {
     
+    /*
     private static StringContainer lastStringContainer = null;
-    
     protected StringContainer(String rawString, String trimmedString, List<String> content, String prefix, String suffix) {
         super(rawString, trimmedString, prefix, suffix);
         setContent(content);
@@ -34,31 +34,25 @@ public class StringContainer extends Container<String> {
             return;
         }
         setContent(ParserUtils.tokenizeString(trimmedString, separatorList));
-    }
+    }*/
     
-    public StringContainer(String rawString) {
-        this(rawString, ' ', "");
-    }
-    
-    public StringContainer(String rawString, String... prefixList) {
-        this(rawString, ' ', prefixList);
-    }
-    
-    public StringContainer(String rawString, char separator, String... prefixList) {
-        this(rawString, separator, new PrefixSuffixCombo(prefixList));
-    }
-    public StringContainer(String rawString, char separator, PrefixSuffixCombo prefixSuffix) {
-        this(rawString, new char[] {separator}, Arrays.asList(new PrefixSuffixCombo[] {prefixSuffix}));
-    }
-    public StringContainer(String rawString, char[] separatorList, List<PrefixSuffixCombo> prefixSuffixList) {
-        super(rawString, prefixSuffixList);
+    public StringContainer(String rawString, ContainerSettings settings) {
+        super(rawString, settings.getPrefixSuffixComboList());
         
         String trimmedString = getTrimmedString();
         if (trimmedString.isEmpty()) {
             return;
         }
-        setContent(ParserUtils.tokenizeString(trimmedString, separatorList));
-        
+        setContent(ParserUtils.tokenizeString(trimmedString, settings.getSeparatorList()));
+    }
+    
+    public StringContainer(String rawString, String trimmedString, String prefix, String suffix, List<String> content) {
+        super(rawString, trimmedString, prefix, suffix);
+        setContent(content);
+    }
+    public StringContainer(StringContainer container) {
+        super(container.getRawString(), container.getTrimmedString(), container.getPrefix(), container.getSuffix());
+        setContent(container.getContent());
     }
     
     @Deprecated
@@ -74,7 +68,7 @@ public class StringContainer extends Container<String> {
     }
     @Override
     public StringContainer clone() {
-        return new StringContainer(getCurrentIndex(), getCurrentReverseIndex(), getRawString(), getTrimmedString(), getContent(), getPrefix(), getSuffix());
+        return new StringContainer(this);
     }
     
 }
