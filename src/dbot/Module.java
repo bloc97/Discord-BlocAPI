@@ -24,8 +24,8 @@ import token.Converter;
  * @author bowen
  */
 public abstract class Module {
-    protected IDiscordClient botClient = null;
-    protected final LinkedList<Addon> addons;
+    private IDiscordClient botClient = null;
+    private final LinkedList<Addon> addons;
     
     private ModuleLoader moduleLoader = null;
     private boolean isLoaded = false;
@@ -46,6 +46,10 @@ public abstract class Module {
     
     public List<Addon> getAddons() {
         return new ArrayList(addons);
+    }
+    
+    public IDiscordClient getBotClient() {
+        return botClient;
     }
     
     public int getId() {

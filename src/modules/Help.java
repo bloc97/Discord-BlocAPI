@@ -33,9 +33,7 @@ public class Help extends Module {
     }
     
     public Help() {
-        add(new modules.help.Help());
-        add(new Commands());
-        add(new Modules());
+        super(new modules.help.Help(), new Commands(), new Modules());
     }
 
     @Override
@@ -106,11 +104,11 @@ public class Help extends Module {
     @Override
     public boolean onMessage(MessageReceivedEvent e, TokenContainer container) {
         
-        for (Addon addon : addons) {
+        for (Addon addon : getAddons()) {
             if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
 
                 HelpAddon ha = (HelpAddon) addon;
-                if (ha.triggerMessage(botClient, e, container, getModuleLoader())) {
+                if (ha.triggerMessage(getBotClient(), e, container, getModuleLoader())) {
                     return true;
                 }
                 container.reset();
