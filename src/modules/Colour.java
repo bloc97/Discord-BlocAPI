@@ -11,7 +11,6 @@ import dbot.Module;
 import dbot.ModuleLoader;
 import modules.colour.RandomColour;
 import modules.colour.SearchColour;
-import modules.help.LoaderAccessor;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.impl.events.ReadyEvent;

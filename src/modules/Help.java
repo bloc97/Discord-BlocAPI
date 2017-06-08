@@ -10,7 +10,6 @@ import container.StringFastContainer;
 import dbot.Module;
 import dbot.ModuleLoader;
 import modules.help.Commands;
-import modules.help.LoaderAccessor;
 import modules.help.Modules;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
