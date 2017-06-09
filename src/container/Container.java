@@ -90,7 +90,7 @@ public abstract class Container<T> {
     public int getCurrentIndex() {
         return index;
     }
-    public int getCurrentReverseIndex() {
+    public int reverseGetCurrentIndex() {
         return reverseIndex;
     }
     public int size() {
@@ -106,23 +106,35 @@ public abstract class Container<T> {
         index = 0;
         reverseIndex = size() - 1;
     }
+    public abstract T getEmptyContent();
     public T get(int i) {
         if (isOob(i)) {
-            return null;
+            return getEmptyContent();
         }
         return content.get(i);
     }
+    public T get(int i, boolean respectBounds) {
+        if (respectBounds) {
+            if (isBoundedByIndexes(i)) {
+                return get(i);
+            } else {
+                return getEmptyContent();
+            }
+        } else {
+            return get(i);
+        }
+    }
     public T get() {
-        return get(index);
+        return get(index, true);
     }
     public T reverseGet() {
-        return get(reverseIndex);
+        return get(reverseIndex, true);
     }
     public T getNext() {
-        return get(index+1);
+        return get(index+1, true);
     }
     public T reverseGetNext() {
-        return get(reverseIndex-1);
+        return get(reverseIndex-1, true);
     }
     public List<T> getContent() {
         return new ArrayList(content);
@@ -143,13 +155,16 @@ public abstract class Container<T> {
         return (T[]) getRemainingContent().toArray();
     }
     public boolean hasNext() {
-        return !isOob(index+1);
+        return isBoundedByIndexes(index+1);
     }
     public boolean reverseHasNext() {
-        return !isOob(reverseIndex-1);
+        return isBoundedByIndexes(reverseIndex-1);
     }
     public boolean isOob(int i) {
         return i >= size() || i < 0;
+    }
+    public boolean isBoundedByIndexes(int i) {
+        return !isOob(i) && i >= index && i <= reverseIndex;
     }
     public void next() {
         index++;

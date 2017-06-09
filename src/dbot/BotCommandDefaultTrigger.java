@@ -5,6 +5,8 @@
  */
 package dbot;
 
+import container.ContainerSettings;
+import container.StringContainer;
 import container.StringFastContainer;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
@@ -15,31 +17,45 @@ import sx.blah.discord.handle.obj.IUser;
  * @author bowen
  */
 public class BotCommandDefaultTrigger implements BotCommandTrigger {
-
+    
+    private final ContainerSettings settings;
+    
+    public BotCommandDefaultTrigger(ContainerSettings settings) {
+        this.settings = settings;
+    }
+    
+    
     @Override
     public boolean isMessageTrigger(IDiscordClient client, MessageReceivedEvent e) {
         if (e.getAuthor().isBot()) {
             return false;
         }
-        //int score = 0;
         if (e.getChannel().isPrivate()) {
-            //score++;
             return true;
         }
         
         String rawString = e.getMessage().getContent();
-        StringFastContainer container = new StringFastContainer(rawString, "!");
-        if (container.get().equalsIgnoreCase(client.getOurUser().getName()) || container.get().equalsIgnoreCase(client.getOurUser().getDisplayName(e.getGuild()))) {
-            //score++;
-            return true;
-        }
-        return false;
+        StringContainer container = new StringContainer(rawString, settings);
+        String botName = client.getOurUser().getName();
+        String botNick = client.getOurUser().getDisplayName(e.getGuild());
+        String botMention = "<@" + client.getOurUser().getLongID() + ">";
+        return (container.get().equalsIgnoreCase(botName) || container.get().equalsIgnoreCase(botNick) || container.get().equals(botMention));
+
     }
     
     @Override
     public String preParse(IDiscordClient client, MessageReceivedEvent e) {
         String rawString = e.getMessage().getContent();
         
+        
+        /*
+        
+        int symbolIndex = rawString.indexOf("!");
+        //Do more here, such as substring etc,
+        //else just start parsing
+        
+        
+        */
         rawString = rawString.trim();
         boolean hasSymbol = false;
         if (rawString.charAt(0) == '!') {

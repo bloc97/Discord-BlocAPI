@@ -7,6 +7,7 @@ package modules.help;
 
 import addon.Addon;
 import container.StringFastContainer;
+import container.TokenAdvancedContainer;
 import container.TokenContainer;
 import container.detector.TokenContentDetector;
 import container.detector.TokenDetectorContainer;
@@ -14,6 +15,7 @@ import container.detector.TokenStringDetector;
 import dbot.Module;
 import dbot.ModuleLoader;
 import helpers.ParserUtils;
+import helpers.TextFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import modules.Help.HelpAddon;
@@ -25,6 +27,7 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IUser;
+import token.NumberToken;
 import token.StringToken;
 import token.Token;
 
@@ -77,13 +80,10 @@ public class Commands implements Addon, HelpAddon {
     }
     
     @Override
-    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenContainer container, ModuleLoader moduleLoader) {
+    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader) {
         
-        StringFastContainer c = new StringFastContainer(e.getMessage().getContent(), "!");
-        if (c.get().equalsIgnoreCase(client.getOurUser().getName())) {
-            c.next();
-        }
-        if (c.get().equalsIgnoreCase("commands")) {
+        if (container.getAsString().equalsIgnoreCase("commands")) {
+            container.next();
             
             EmbedObject eo = new EmbedObject();
             
@@ -98,20 +98,12 @@ public class Commands implements Addon, HelpAddon {
             }
             
             
-            c.next();
-            int pageNum = 1;
+            int pageNum = container.getAsNumber().intValue();
             int commandsPerPage = 8;
             int pageTotal = (int)Math.ceil((double)addons.size()/commandsPerPage);
-            try {
-                pageNum = Integer.parseInt(c.get());
-            } catch (NumberFormatException ex) {
-                
-            }
-            if (pageNum > pageTotal) {
-                pageNum = pageTotal;
-            } else if (pageNum < 1) {
-                pageNum = 1;
-            }
+            
+            pageNum = TextFormatter.bound(pageNum, 1, pageTotal);
+            
             int maxAddonIndex = Math.min(pageNum*8, addons.size());
             List<Addon> shownAddons = addons.subList((pageNum-1)*8, maxAddonIndex);
             

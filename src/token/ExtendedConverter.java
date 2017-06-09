@@ -13,9 +13,9 @@ import sx.blah.discord.handle.obj.IMessage;
  *
  * @author bowen
  */
-public abstract class ExtendedConverter implements Converter {
+public abstract class ExtendedConverter implements TokenConverter {
     
-    DefaultConverter defaultConverter = new DefaultConverter();
+    DefaultTokenConverter defaultConverter = new DefaultTokenConverter();
     
     @Override
     public Token convertToToken(String token) {

@@ -13,7 +13,7 @@ import sx.blah.discord.handle.obj.IMessage;
  *
  * @author bowen
  */
-public interface Converter {
+public interface TokenConverter {
     
     public Token convertToToken(String token);
     public Token convertToToken(IDiscordClient client, MessageReceivedEvent event, String token);
@@ -24,5 +24,8 @@ public interface Converter {
         } else {
             return new StringToken(token);
         }
+    }
+    public static TokenConverter getDefault() {
+        return new DefaultTokenConverter();
     }
 }

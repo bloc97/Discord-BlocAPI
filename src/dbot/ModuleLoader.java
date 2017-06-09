@@ -7,6 +7,7 @@ package dbot;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -28,12 +29,13 @@ public class ModuleLoader {
     private int currentIdIndex = 0;
     
     public ModuleLoader(Module... modulesList) {
-        modules = new HashSet<>();
+        modules = new LinkedHashSet<>();
         disabledModules = new HashSet<>();
+        add(new Help());
+        
         for (Module module : modulesList) {
             add(module);
         }
-        add(new Help());
     }
     
     public final void add(Module module) {

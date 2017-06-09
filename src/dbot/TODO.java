@@ -12,4 +12,5 @@ package dbot;
 public class TODO {
     //Complete ParameterTokenContainer
     //Allow the BotCommandDefaultTrigger to be affected by ContainerSettings, such as prefix detection
+    //Add helper function to PreParse
 }

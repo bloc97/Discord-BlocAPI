@@ -55,6 +55,11 @@ public class StringContainer extends Container<String> {
         setContent(container.getContent());
     }
     
+    @Override
+    public String getEmptyContent() {
+        return "";
+    }
+    
     @Deprecated
     public String getContentAsString() {
         return TextFormatter.join(getContentAsArray(), ' ');
@@ -70,5 +75,4 @@ public class StringContainer extends Container<String> {
     public StringContainer clone() {
         return new StringContainer(this);
     }
-    
 }

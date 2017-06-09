@@ -35,6 +35,13 @@ public class StringAdvancedContainer extends StringContainer {
         
     }
     
+    public Set<String> getFlags() {
+        return new HashSet(flags);
+    }
+    public List<ParameterStringContainer> getParameters() {
+        return new ArrayList(parameters);
+    }
+    
     public boolean checkFlag(String flag) {
         return flags.contains(flag);
     }

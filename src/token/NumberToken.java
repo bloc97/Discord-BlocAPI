@@ -29,8 +29,20 @@ public class NumberToken extends Token<Number> {
     }
     public NumberToken(String string) {
         super(string);
-        contentInteger = Long.parseLong(string);
-        contentFloating = Double.parseDouble(string);
+        Long i;
+        Double d;
+        try {
+            i = Long.parseLong(string);
+            d = Double.parseDouble(string);
+        } catch (NumberFormatException ex) {
+            i = 0l;
+            d = Double.NaN;
+        }
+        contentInteger = i;
+        contentFloating = d;
+        try {
+        } catch (NumberFormatException ex) {
+        }
         useFloating = !contentInteger.toString().equals(string);
     }
 

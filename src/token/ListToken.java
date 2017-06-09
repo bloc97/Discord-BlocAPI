@@ -18,13 +18,13 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
  */
 public class ListToken extends Token<List<Token>> {
     private final List<Token> content;
-    public ListToken(String rawString, Converter converter) {
+    public ListToken(String rawString, TokenConverter converter, char[] separators) {
         super(rawString);
         if (!isType(rawString)) {
             throw new IllegalArgumentException("Cannot parse string into a ListToken");
         }
         String string = rawString.substring(1, rawString.length() - 1);
-        List<String> stringArr = ParserUtils.tokenizeString(string, new char[] {','});
+        List<String> stringArr = ParserUtils.tokenizeString(string, separators);
         LinkedList<Token> tempContent = new LinkedList();
         
         for (String s : stringArr) {
@@ -34,13 +34,13 @@ public class ListToken extends Token<List<Token>> {
         
     }
     
-    public ListToken(IDiscordClient client, MessageReceivedEvent event, String rawString, Converter converter) {
+    public ListToken(IDiscordClient client, MessageReceivedEvent event, String rawString, TokenConverter converter, char[] separators) {
         super(rawString);
         if (!isType(rawString)) {
             throw new IllegalArgumentException("Cannot parse string into a ListToken");
         }
         String string = rawString.substring(1, rawString.length() - 1);
-        List<String> stringArr = ParserUtils.tokenizeString(string, new char[] {','});
+        List<String> stringArr = ParserUtils.tokenizeString(string, separators);
         LinkedList<Token> tempContent = new LinkedList();
         
         for (String s : stringArr) {

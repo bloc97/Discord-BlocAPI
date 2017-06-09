@@ -3,17 +3,34 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/modules/Debug.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/helpers/ParserUtils.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/helpers/TextFormatter.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/modules/help/Commands.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/modules/Colour.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/modules/colour/ColourDatabase.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/modules/colour/RandomColour.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/modules/help/Help.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/modules/colour/SearchColour.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/modules/help/Modules.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/container/ParameterStringContainer.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/token/DefaultConverter.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/container/detector/TokenStringDetector.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/container/StringAdvancedContainer.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/StringTriggerDetector.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/BotNameTriggerDetector.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/TODO.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/ChannelDetector.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/container/detector/TokenContentDetector.java</file>
             <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/modules/Help.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/ModuleLoader.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/BotCommandTriggerDetector.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/addon/Addon.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/BotMentionTriggerDetector.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/container/StringFastContainer.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/BotCommandTrigger.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/container/TokenContainer.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/helpers/ParserUtils.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/container/StringContainer.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/container/ContainerSettings.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/Module.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/token/ExtendedConverter.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/token/Converter.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/modules/help/Help.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/dbot/BotCommandDefaultTrigger.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/container/Container.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/modules/help/Modules.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/DiscordBot/src/token/ListToken.java</file>
         </group>
     </open-files>
 </project-private>

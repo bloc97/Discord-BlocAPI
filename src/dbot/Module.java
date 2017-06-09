@@ -8,6 +8,8 @@ package dbot;
 import addon.Addon;
 import container.ContainerSettings;
 import container.StringAdvancedContainer;
+import container.StringContainer;
+import container.TokenAdvancedContainer;
 import container.TokenContainer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +19,7 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import token.Converter;
+import token.TokenConverter;
 
 /**
  *
@@ -102,9 +104,9 @@ public abstract class Module {
     public abstract String getAuthor();
     public abstract long getUid();
     
-    public abstract BotCommandTrigger getCommandTrigger();
     public abstract ContainerSettings getContainerSettings();
-    public abstract Converter getTokenConverter();
+    public abstract TokenConverter getTokenConverter();
+    public abstract BotCommandTrigger getCommandTrigger();
     
     public boolean onEvent(Event e) {
         if (e instanceof ReadyEvent) {
@@ -115,7 +117,7 @@ public abstract class Module {
             BotCommandTrigger commandTrigger = getCommandTrigger();
             if (commandTrigger.isMessageTrigger(botClient, em)) {
                 String rawString = commandTrigger.preParse(botClient, em);
-                TokenContainer container = new TokenContainer(botClient, em, new StringAdvancedContainer(rawString, getContainerSettings()), getTokenConverter());
+                TokenAdvancedContainer container = new TokenAdvancedContainer(botClient, em, new StringAdvancedContainer(rawString, getContainerSettings()), getTokenConverter());
                 return onMessage(em, container);
             }
             return false;
@@ -132,7 +134,7 @@ public abstract class Module {
     
     public abstract boolean onOtherEvent(Event e);
     public abstract boolean onReady(ReadyEvent e);
-    public abstract boolean onMessage(MessageReceivedEvent e, TokenContainer container);
+    public abstract boolean onMessage(MessageReceivedEvent e, TokenAdvancedContainer container);
     
     
 }

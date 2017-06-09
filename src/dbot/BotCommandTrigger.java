@@ -5,8 +5,10 @@
  */
 package dbot;
 
+import container.ContainerSettings;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import token.DefaultTokenConverter;
 
 /**
  *
@@ -15,4 +17,8 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 public interface BotCommandTrigger {
     public boolean isMessageTrigger(IDiscordClient client, MessageReceivedEvent e);
     public String preParse(IDiscordClient client, MessageReceivedEvent e);
+    
+    public static BotCommandTrigger getDefault(ContainerSettings settings) {
+        return new BotCommandDefaultTrigger(settings);
+    }
 }

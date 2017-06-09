@@ -7,7 +7,9 @@ package modules;
 
 import addon.Addon;
 import container.ContainerSettings;
+import container.StringContainer;
 import container.StringFastContainer;
+import container.TokenAdvancedContainer;
 import container.TokenContainer;
 import dbot.BotCommandDefaultTrigger;
 import dbot.BotCommandTrigger;
@@ -19,17 +21,18 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import token.Converter;
-import token.DefaultConverter;
+import token.DefaultTokenConverter;
+import token.TokenConverter;
 
 /**
  *
- * @author bowen
+ * @author bowenimport token.TokenConverter;
+
  */
 public class Help extends Module {
 
     public interface HelpAddon {
-        public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenContainer container, ModuleLoader moduleLoader);
+        public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader);
     }
     
     public Help() {
@@ -76,19 +79,22 @@ public class Help extends Module {
         return -8461062l;
     }
     
-    @Override
-    public BotCommandTrigger getCommandTrigger() {
-        return new BotCommandDefaultTrigger();
-    }
-
+    private static final ContainerSettings settings = ContainerSettings.buildSettings("!");
     @Override
     public ContainerSettings getContainerSettings() {
-        return ContainerSettings.buildSettings("!");
+        return settings;
     }
 
+    private static final TokenConverter converter = TokenConverter.getDefault();
     @Override
-    public Converter getTokenConverter() {
-        return new DefaultConverter();
+    public TokenConverter getTokenConverter() {
+        return converter;
+    }
+    
+    private static final BotCommandTrigger trigger = BotCommandTrigger.getDefault(settings);
+    @Override
+    public BotCommandTrigger getCommandTrigger() {
+        return trigger;
     }
 
     @Override
@@ -102,7 +108,7 @@ public class Help extends Module {
     }
 
     @Override
-    public boolean onMessage(MessageReceivedEvent e, TokenContainer container) {
+    public boolean onMessage(MessageReceivedEvent e, TokenAdvancedContainer container) {
         
         for (Addon addon : getAddons()) {
             if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {

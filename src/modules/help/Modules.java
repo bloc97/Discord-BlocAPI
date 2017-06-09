@@ -7,6 +7,7 @@ package modules.help;
 
 import addon.Addon;
 import container.StringFastContainer;
+import container.TokenAdvancedContainer;
 import container.TokenContainer;
 import container.detector.TokenDetectorContainer;
 import container.detector.TokenStringDetector;
@@ -72,13 +73,9 @@ public class Modules implements Addon, HelpAddon {
     }
 
     @Override
-    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenContainer container, ModuleLoader moduleLoader) {
+    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader) {
         
-        StringFastContainer c = new StringFastContainer(e.getMessage().getContent(), "!");
-        if (c.get().equalsIgnoreCase(client.getOurUser().getName())) {
-            c.next();
-        }
-        if (c.get().equalsIgnoreCase("modules")) {
+        if (container.getAsString().equalsIgnoreCase("modules")) {
             String finalString = "";
             for (Module module : moduleLoader.getEnabledModules()) {
                 finalString += module.getShortName() + " v" + module.getVersion() + " (by " + module.getAuthor() + ") - " + module.getShortDescription()+ "\n";

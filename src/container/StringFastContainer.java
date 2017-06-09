@@ -16,28 +16,25 @@ import java.util.List;
  */
 public class StringFastContainer extends Container<String> {
     
-    public StringFastContainer(String rawString) {
-        this(rawString, ' ');
-    }
-    
-    public StringFastContainer(String rawString, String... prefixList) {
-        this(rawString, ' ', new PrefixSuffixCombo(prefixList));
-    }
-    public StringFastContainer(String rawString, char separator) {
-        this(rawString, separator, new PrefixSuffixCombo(""));
-    }
-    public StringFastContainer(String rawString, char separator, String... prefixList) {
-        this(rawString, separator, new PrefixSuffixCombo(prefixList));
-    }
-    public StringFastContainer(String rawString, char separator, PrefixSuffixCombo prefixSuffix) {
-        super(rawString, Arrays.asList(new PrefixSuffixCombo[] {prefixSuffix}));
+    public StringFastContainer(String rawString, ContainerSettings settings) {
+        super(rawString, settings.getPrefixSuffixComboList());
         
         String trimmedString = getTrimmedString();
         if (trimmedString.isEmpty()) {
             return;
         }
-        setContent(Arrays.asList(trimmedString.split("" + separator)));
+        if (settings.getSeparatorList().length < 1) {
+            
+        } else {
+            setContent(Arrays.asList(trimmedString.split("" + settings.getSeparatorList()[0])));
+        }
     }
+    
+    @Override
+    public String getEmptyContent() {
+        return "";
+    }
+    
     /*
     StringAdvancedContainer getFull() {
         return this.getFull(new char[] {' '});
@@ -45,4 +42,5 @@ public class StringFastContainer extends Container<String> {
     StringAdvancedContainer getFull(char[] separatorList) {
         return new StringAdvancedContainer(getRawString(), separatorList, getPrefix(), getSuffix());
     }*/
+
 }

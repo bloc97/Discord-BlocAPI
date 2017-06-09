@@ -22,9 +22,51 @@ import java.util.Set;
  */
 public abstract class ParserUtils {
     
+    public static boolean isDecimalNumber(String string) {
+        try {
+            Double.parseDouble(string);
+            Long.parseLong(string);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+    }
+    
     public static boolean startsWithCaseless(String rawString, String string) {
         return rawString.toLowerCase().startsWith(string.toLowerCase());
     }
+    
+    public static String getFirst(String string, String[] stringList) {
+        
+        int lowestIndex = Integer.MAX_VALUE;
+        String found = "";
+        
+        for (String s : stringList) {
+            int thisIndex = string.indexOf(s);
+            if (thisIndex >= 0 && thisIndex < lowestIndex) {
+                lowestIndex = thisIndex;
+                found = s;
+            }
+        }
+        return found;
+    }
+    
+    public static String getFirstCaseless(String string, String[] stringList) {
+        string = string.toLowerCase(); //caseless
+        int lowestIndex = Integer.MAX_VALUE;
+        String found = "";
+        
+        for (String s : stringList) {
+            s = s.toLowerCase(); //caseless
+            int thisIndex = string.indexOf(s);
+            if (thisIndex >= 0 && thisIndex < lowestIndex) {
+                lowestIndex = thisIndex;
+                found = s;
+            }
+        }
+        return found;
+    }
+    
     
     public static int findPrefix(String string, String[] prefixList) {
         return findPrefix(string, prefixList, false);
