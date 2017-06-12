@@ -113,6 +113,7 @@ public class Help extends Module {
         
         for (Addon addon : getAddons()) {
             if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
+                
                 HelpAddon ha = (HelpAddon) addon;
                 if (ha.triggerMessage(getBotClient(), e, container, getModuleLoader())) {
                     return true;
@@ -122,6 +123,5 @@ public class Help extends Module {
         }
         return false;
     }
-
     
 }

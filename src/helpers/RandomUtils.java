@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author bowen
  */
-public abstract class Random {
+public abstract class RandomUtils {
     public static int randomRange(int min, int max) {
         if (max < min) {
             throw new IllegalArgumentException("Maximum value must be bigger or equal to the minimum.");

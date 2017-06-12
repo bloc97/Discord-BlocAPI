@@ -49,7 +49,7 @@ public class RandomTest {
             int min = 0;
             int max = i;
             for (int n=0; n<1000; n++) {
-                int result = Random.randomRange(min, max);
+                int result = RandomUtils.randomRange(min, max);
                 assertTrue(result + " is smaller than " + min, result >= 0);
                 assertTrue(result + " is bigger than " + max, result <= max);
             }
@@ -68,7 +68,7 @@ public class RandomTest {
             int min = 0;
             int max = i;
             for (int n=0; n<1000; n++) {
-                int result = Random.randomRangeExclude(min, max);
+                int result = RandomUtils.randomRangeExclude(min, max);
                 assertTrue(result + " is smaller than " + min, result >= 0);
                 assertTrue(result + " is not smaller than " + max, result < max);
             }
@@ -84,7 +84,7 @@ public class RandomTest {
         for (int i=1; i<10; i++) {
             List<Integer> list = Arrays.asList(new Integer[i]);
             for (int n=0; n<1000; n++) {
-                int result = Random.randomListIndex(list);
+                int result = RandomUtils.randomListIndex(list);
                 assertTrue(result + " is an out of bounds index in a list of size " + i, result >=0 && result < i);
             }
         }
@@ -95,7 +95,7 @@ public class RandomTest {
         for (int i=1; i<10; i++) {
             Integer[] array = new Integer[i];
             for (int n=0; n<1000; n++) {
-                int result = Random.randomArrayIndex(array);
+                int result = RandomUtils.randomArrayIndex(array);
                 assertTrue(result + " is an out of bounds index in an array of size " + i, result >=0 && result < i);
             }
         }

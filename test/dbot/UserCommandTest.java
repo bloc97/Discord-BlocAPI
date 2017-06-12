@@ -6,7 +6,8 @@
 package dbot;
 
 import dbot.UserCommand;
-import helpers.OtherUtils;
+import helpers.NumberUtils;
+import helpers.ParserUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -204,7 +205,7 @@ public class UserCommandTest {
     public void testGetAllTokensString() {
         System.out.println("getAllTokensString");
         UserCommand instance = new UserCommand(commandSpaceArray);
-        String expResult = OtherUtils.join(commandSpaceArray, ' ');
+        String expResult = ParserUtils.join(commandSpaceArray, ' ');
         String result = instance.getAllTokensString();
         assertEquals(expResult, result);
     }
@@ -233,15 +234,15 @@ public class UserCommandTest {
         int backCount = size - 1;
         for (int i=0; i<2; i++) {
             String result = instance.getTokensString();
-            assertEquals(OtherUtils.join(Arrays.copyOfRange(commandSpaceArray, count, backCount+1), ' '), result);
+            assertEquals(ParserUtils.join(Arrays.copyOfRange(commandSpaceArray, count, backCount+1), ' '), result);
             instance.next();
             count++;
             result = instance.getTokensString();
-            assertEquals(OtherUtils.join(Arrays.copyOfRange(commandSpaceArray, count, backCount+1), ' '), result);
+            assertEquals(ParserUtils.join(Arrays.copyOfRange(commandSpaceArray, count, backCount+1), ' '), result);
             instance.nextReverse();
             backCount--;
             result = instance.getTokensString();
-            assertEquals(OtherUtils.join(Arrays.copyOfRange(commandSpaceArray, count, backCount+1), ' '), result);
+            assertEquals(ParserUtils.join(Arrays.copyOfRange(commandSpaceArray, count, backCount+1), ' '), result);
         }
     }
 

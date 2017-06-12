@@ -9,7 +9,7 @@ package helpers;
  *
  * @author bowen
  */
-public abstract class Colour {
+public abstract class ColourUtils {
     public static int getIntFromRGB(int r, int g, int b, int a) {
         int ia = (a << 24) & 0xFF000000;
         int ir = (r << 16) & 0x00FF0000;
@@ -30,5 +30,8 @@ public abstract class Colour {
     }
     public static int getIntFromRGB(float r, float g, float b) {
         return getIntFromRGB(r, g, b, 0);
+    }
+    public static int getRandomIntColour() {
+        return getIntFromRGB(RandomUtils.randomRange(0, 255), RandomUtils.randomRange(0, 255), RandomUtils.randomRange(0, 255));
     }
 }

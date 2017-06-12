@@ -6,7 +6,7 @@
 package container;
 
 import helpers.ParserUtils;
-import helpers.OtherUtils;
+import helpers.NumberUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,8 +147,8 @@ public abstract class Container<T> {
             return new ArrayList();
         }
         
-        int i = OtherUtils.boundExcludeMax(this.index, 0, size());
-        int ri = OtherUtils.boundExcludeMax(this.reverseIndex, 0, size());
+        int i = NumberUtils.boundExcludeMax(this.index, 0, size());
+        int ri = NumberUtils.boundExcludeMax(this.reverseIndex, 0, size());
         return content.subList(i, ri+1);
     }
     public T[] getRemainingContentAsArray() {

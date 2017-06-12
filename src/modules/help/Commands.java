@@ -15,7 +15,7 @@ import container.detector.TokenStringDetector;
 import dbot.Module;
 import dbot.ModuleLoader;
 import helpers.ParserUtils;
-import helpers.OtherUtils;
+import helpers.NumberUtils;
 import java.util.LinkedList;
 import java.util.List;
 import modules.Help.HelpAddon;
@@ -102,7 +102,7 @@ public class Commands implements Addon, HelpAddon {
             int commandsPerPage = 8;
             int pageTotal = (int)Math.ceil((double)addons.size()/commandsPerPage);
             
-            pageNum = OtherUtils.bound(pageNum, 1, pageTotal);
+            pageNum = NumberUtils.bound(pageNum, 1, pageTotal);
             
             int maxAddonIndex = Math.min(pageNum*8, addons.size());
             List<Addon> shownAddons = addons.subList((pageNum-1)*8, maxAddonIndex);

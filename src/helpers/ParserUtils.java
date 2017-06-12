@@ -9,7 +9,7 @@ import container.StringAdvancedContainer;
 import container.ParameterStringContainer;
 import container.StringContainer;
 import container.TokenContainer;
-import helpers.OtherUtils;
+import helpers.NumberUtils;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -22,6 +22,11 @@ import java.util.Set;
  */
 public abstract class ParserUtils {
     
+    /**
+     * Checks if string can be represented as a number.
+     * @param string
+     * @return
+     */
     public static boolean isDecimalNumber(String string) {
         try {
             Double.parseDouble(string);
@@ -32,10 +37,41 @@ public abstract class ParserUtils {
         }
     }
     
+    /**
+     * Checks if string can be represented as a number.
+     * @param string
+     * String to be parsed
+     * @param radix
+     * 
+     * @return
+     */
+    public static boolean isRadixNumber(String string, int radix) {
+        try {
+            Long.parseLong(string, radix);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+    }
+    
+    /**
+     * Checks if a string starts with another string, and does not 
+     * @param rawString
+     * @param string
+     * @return
+     */
     public static boolean startsWithCaseless(String rawString, String string) {
         return rawString.toLowerCase().startsWith(string.toLowerCase());
     }
     
+    /**
+     * Gets the first string in stringList found in the string.
+     * @param string
+     * Main String used in search
+     * @param stringList
+     * Smaller strings used to search in the main string
+     * @return
+     */
     public static String getFirst(String string, String[] stringList) {
         
         int lowestIndex = Integer.MAX_VALUE;
@@ -230,7 +266,7 @@ public abstract class ParserUtils {
     public static String untokenizeString(List<String> content, char[] separatorList) {
         String string = "--";
         for (String s : content) {
-            if (OtherUtils.containsCharacter(s, separatorList)) {
+            if (containsCharacter(s, separatorList)) {
                 string = string + " \"" + s + "\"";
             } else {
                 string = string + " " + s;
@@ -282,5 +318,108 @@ public abstract class ParserUtils {
             newContent.remove(toRemove);
         }
         return new ArrayList(newContent);
+    }
+
+    public static String join(String[] array) {
+        String string = "";
+        for (String s : array) {
+            string = string.concat(s);
+        }
+        return string;
+    }
+
+    public static String join(String[] array, Character c) {
+        if (c == null) {
+            c = ' ';
+        }
+        String string = "";
+        for (String s : array) {
+            string = string.concat(s + c);
+        }
+        return string.substring(0, string.length() - 1);
+    }
+
+    public static String fillBegin(String string, char c, int finalLength) {
+        while (string.length() < finalLength) {
+            string = c + string;
+        }
+        return string;
+    }
+
+    public static boolean containsCharacter(String string, char[] characters) {
+        for (char c : characters) {
+            if (string.indexOf(c) != -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String formatNounOutput(String s) {
+        //Formats a unformatted noun for output (capitalize first letter)
+        return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+    }
+
+    public static String repeatString(String s, int n) {
+        String string = "";
+        for (int i = 0; i < n; i++) {
+            string += s;
+        }
+        return string;
+    }
+
+    public static String fillEnd(String string, char c, int finalLength) {
+        while (string.length() < finalLength) {
+            string = string + c;
+        }
+        return string;
+    }
+
+    public static boolean isCharNumberASCII(char c) {
+        return c >= 48 && c <= 57;
+    }
+
+    public static String formatCapitalUnderscore(String s) {
+        String string = "";
+        String[] sArr = s.split("_");
+        for (String ss : sArr) {
+            string += ss.substring(0, 1) + ss.substring(1).toLowerCase() + " ";
+        }
+        if (string.length() < 1) {
+            return "None";
+        }
+        if (string.endsWith(" ")) {
+            string = string.substring(0, string.length() - 1);
+        }
+        return string;
+    }
+
+    public static String formatInput(String s) {
+        char[] cArr = s.toCharArray();
+        String formattedString = "";
+        for (int i = 0; i < cArr.length; i++) {
+            if (isCharTextASCII(cArr[i])) {
+                formattedString += cArr[i];
+            }
+        }
+        return formattedString;
+    }
+
+    public static String formatOutput(String s) {
+        if (s.isEmpty()) {
+            return "None";
+        }
+        return s;
+    }
+
+    public static boolean isCharLetterASCII(char c) {
+        return (c >= 65 && c <= 90) || (c >= 97 && c <= 122);
+    }
+
+    public static boolean isCharTextASCII(char c) {
+        return c == 10 || c == 12 || c == 13 || (c >= 32 && c <= 126);
+        //10, '\n' newline
+        //12, '\f' newpage
+        //13, '\r' return to beginning of line
     }
 }
