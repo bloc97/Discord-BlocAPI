@@ -9,7 +9,7 @@ import container.StringAdvancedContainer;
 import container.ParameterStringContainer;
 import container.StringContainer;
 import container.TokenContainer;
-import helpers.TextFormatter;
+import helpers.OtherUtils;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -230,7 +230,7 @@ public abstract class ParserUtils {
     public static String untokenizeString(List<String> content, char[] separatorList) {
         String string = "--";
         for (String s : content) {
-            if (TextFormatter.containsCharacter(s, separatorList)) {
+            if (OtherUtils.containsCharacter(s, separatorList)) {
                 string = string + " \"" + s + "\"";
             } else {
                 string = string + " " + s;

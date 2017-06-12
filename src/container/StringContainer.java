@@ -6,7 +6,7 @@
 package container;
 
 import helpers.ParserUtils;
-import helpers.TextFormatter;
+import helpers.OtherUtils;
 import java.util.Arrays;
 import java.util.List;
 
@@ -62,14 +62,14 @@ public class StringContainer extends Container<String> {
     
     @Deprecated
     public String getContentAsString() {
-        return TextFormatter.join(getContentAsArray(), ' ');
+        return OtherUtils.join(getContentAsArray(), ' ');
     }
     @Deprecated
     public String getRemainingContentAsString() {
         if (index > reverseIndex) {
             return "";
         }
-        return TextFormatter.join(getRemainingContentAsArray(), ' ');
+        return OtherUtils.join(getRemainingContentAsArray(), ' ');
     }
     @Override
     public StringContainer clone() {

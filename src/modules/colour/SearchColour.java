@@ -10,7 +10,7 @@ import container.StringFastContainer;
 import helpers.Colour;
 import helpers.ParserUtils;
 import helpers.Random;
-import helpers.TextFormatter;
+import helpers.OtherUtils;
 import java.util.Map;
 import java.util.Map.Entry;
 import modules.Colour.ColourAddon;
@@ -116,8 +116,8 @@ public class SearchColour implements Addon, ColourAddon {
             
             
             EmbedObject eo = new EmbedObject();
-            String hexString = TextFormatter.fillBegin(Integer.toHexString(colour), '0', 6);
-            String closestHexString = TextFormatter.fillBegin(Integer.toHexString(closestColour), '0', 6);
+            String hexString = OtherUtils.fillBegin(Integer.toHexString(colour), '0', 6);
+            String closestHexString = OtherUtils.fillBegin(Integer.toHexString(closestColour), '0', 6);
             
             //System.out.println(hexString + " " + closestHexString);
             //EmbedObject.EmbedFieldObject fo = new EmbedObject.EmbedFieldObject("HEX: #" + hexString.toUpperCase(), "RGB: 0 0 0", true);

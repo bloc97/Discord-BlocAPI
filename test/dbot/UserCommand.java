@@ -7,7 +7,7 @@ package dbot;
  */
 
 
-import helpers.TextFormatter;
+import helpers.OtherUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -84,7 +84,7 @@ public class UserCommand {
         if (TRIGGERSYMBOLS.contains(command.charAt(0))) {
             symbol = command.charAt(0);
             command = command.substring(1);
-        } else if (TextFormatter.isCharLetterASCII(command.charAt(0)) || TextFormatter.isCharNumberASCII(command.charAt(0))) {
+        } else if (OtherUtils.isCharLetterASCII(command.charAt(0)) || OtherUtils.isCharNumberASCII(command.charAt(0))) {
             symbol = 0;
         } else {
             content = new ArrayList<>();
@@ -196,7 +196,7 @@ public class UserCommand {
         return get(currentReverseIndex-1);
     }
     public String getAllTokensString() {
-        return TextFormatter.join(content.toArray(new String[0]), new LinkedList<>(separators).getFirst());
+        return OtherUtils.join(content.toArray(new String[0]), new LinkedList<>(separators).getFirst());
     }
     public String[] getAllTokensArray() {
         return content.toArray(new String[0]);
@@ -205,16 +205,16 @@ public class UserCommand {
         if (currentIndex > currentReverseIndex) {
             return "";
         }
-        int index = TextFormatter.boundExcludeMax(currentIndex, 0, size());
-        int reverseIndex = TextFormatter.boundExcludeMax(currentReverseIndex, 0, size());
-        return TextFormatter.join(Arrays.copyOfRange(content.toArray(new String[0]), index, reverseIndex+1), new LinkedList<>(separators).getFirst());
+        int index = OtherUtils.boundExcludeMax(currentIndex, 0, size());
+        int reverseIndex = OtherUtils.boundExcludeMax(currentReverseIndex, 0, size());
+        return OtherUtils.join(Arrays.copyOfRange(content.toArray(new String[0]), index, reverseIndex+1), new LinkedList<>(separators).getFirst());
     }
     public String[] getTokensArray() {
         if (currentIndex > currentReverseIndex) {
             return new String[] {""};
         }
-        int index = TextFormatter.boundExcludeMax(currentIndex, 0, size());
-        int reverseIndex = TextFormatter.boundExcludeMax(currentReverseIndex, 0, size());
+        int index = OtherUtils.boundExcludeMax(currentIndex, 0, size());
+        int reverseIndex = OtherUtils.boundExcludeMax(currentReverseIndex, 0, size());
         return Arrays.copyOfRange(content.toArray(new String[0]), index, reverseIndex+1);
     }
     public boolean hasNext() {

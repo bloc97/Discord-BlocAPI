@@ -9,7 +9,7 @@ package helpers;
  *
  * @author bowen
  */
-public abstract class TextFormatter {
+public abstract class OtherUtils {
     
     public static String repeatString(String s, int n) {
         String string = "";

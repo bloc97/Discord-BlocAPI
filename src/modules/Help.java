@@ -15,6 +15,7 @@ import dbot.BotCommandDefaultTrigger;
 import dbot.BotCommandTrigger;
 import dbot.Module;
 import dbot.ModuleLoader;
+import modules.Help.HelpAddon;
 import modules.help.Commands;
 import modules.help.Modules;
 import sx.blah.discord.api.IDiscordClient;
@@ -31,7 +32,7 @@ import token.TokenConverter;
  */
 public class Help extends Module {
 
-    public interface HelpAddon {
+    public interface HelpAddon extends Addon {
         public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader);
     }
     
@@ -112,7 +113,6 @@ public class Help extends Module {
         
         for (Addon addon : getAddons()) {
             if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
-
                 HelpAddon ha = (HelpAddon) addon;
                 if (ha.triggerMessage(getBotClient(), e, container, getModuleLoader())) {
                     return true;

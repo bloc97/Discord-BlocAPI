@@ -10,7 +10,7 @@ import container.StringFastContainer;
 import helpers.Colour;
 import helpers.ParserUtils;
 import helpers.Random;
-import helpers.TextFormatter;
+import helpers.OtherUtils;
 import java.util.Map;
 import java.util.Map.Entry;
 import modules.Colour.ColourAddon;
@@ -97,7 +97,7 @@ public class RandomColour implements Addon, ColourAddon {
             } catch (NumberFormatException ex) {
                 
             }
-            number = TextFormatter.bound(number, 1, 4);
+            number = OtherUtils.bound(number, 1, 4);
             
             if (number == 1) {
             
@@ -105,7 +105,7 @@ public class RandomColour implements Addon, ColourAddon {
                 randomColour = randomEntry.getKey();
 
                 EmbedObject eo = new EmbedObject();
-                String hexString = TextFormatter.fillBegin(Integer.toHexString(randomColour), '0', 6);
+                String hexString = OtherUtils.fillBegin(Integer.toHexString(randomColour), '0', 6);
                 eo.footer = new EmbedObject.FooterObject("#" + hexString.toUpperCase(), null, null);
                 eo.color = (randomColour == 0) ? 1 : randomColour;
                 eo.image = new EmbedObject.ImageObject("http://www.colorhexa.com/" + hexString + ".png", null, 32, 32);
@@ -121,7 +121,7 @@ public class RandomColour implements Addon, ColourAddon {
                     randomColour = randomEntry.getKey();
 
                     EmbedObject eo = new EmbedObject();
-                    String hexString = TextFormatter.fillBegin(Integer.toHexString(randomColour), '0', 6);
+                    String hexString = OtherUtils.fillBegin(Integer.toHexString(randomColour), '0', 6);
                     eo.footer = new EmbedObject.FooterObject("#" + hexString.toUpperCase(), "http://www.colorhexa.com/" + hexString + ".png", null);
                     eo.color = (randomColour == 0) ? 1 : randomColour;
                     eo.author = new EmbedObject.AuthorObject(randomEntry.getValue(), "http://www.colorhexa.com/" + hexString, null, null);

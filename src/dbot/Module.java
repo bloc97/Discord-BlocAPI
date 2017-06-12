@@ -24,6 +24,7 @@ import token.TokenConverter;
 /**
  *
  * @author bowen
+ * @param <T>
  */
 public abstract class Module {
     private IDiscordClient botClient = null;
@@ -47,7 +48,7 @@ public abstract class Module {
     }
     
     public List<Addon> getAddons() {
-        return new ArrayList(addons);
+        return new ArrayList<>(addons);
     }
     
     public IDiscordClient getBotClient() {

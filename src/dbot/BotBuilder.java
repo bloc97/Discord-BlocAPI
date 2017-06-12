@@ -5,7 +5,7 @@
  */
 package dbot;
 
-import helpers.TextFormatter;
+import helpers.OtherUtils;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -28,7 +28,7 @@ public abstract class BotBuilder {
             dApiKey = Files.readAllLines(path).get(0);
 
             int showLength = Math.min(16, dApiKey.length()/2);
-            System.out.println("Discord Bot API Key: " + dApiKey.substring(0, showLength) + TextFormatter.repeatString("*", dApiKey.length() - showLength));
+            System.out.println("Discord Bot API Key: " + dApiKey.substring(0, showLength) + OtherUtils.repeatString("*", dApiKey.length() - showLength));
         } catch (IOException ex) {
             ex.printStackTrace();
             return;
