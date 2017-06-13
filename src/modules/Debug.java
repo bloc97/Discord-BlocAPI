@@ -28,6 +28,10 @@ import token.TokenConverter;
  * @author bowen
  */
 public class Debug extends Module {
+
+    public Debug(ContainerSettings containerSettings, TokenConverter tokenConverter, BotCommandTrigger commandTrigger) {
+        super(containerSettings, tokenConverter, commandTrigger);
+    }
     
     public void spawnAddon() {
         final int i = getAddons().size();
@@ -112,24 +116,6 @@ public class Debug extends Module {
     @Override
     public long getUid() {
         return -24361349l;
-    }
-    
-    private static final ContainerSettings settings = ContainerSettings.buildSettings("!");
-    @Override
-    public ContainerSettings getContainerSettings() {
-        return settings;
-    }
-
-    private static final TokenConverter converter = TokenConverter.getDefault();
-    @Override
-    public TokenConverter getTokenConverter() {
-        return converter;
-    }
-    
-    private static final BotCommandTrigger trigger = BotCommandTrigger.getDefault(settings);
-    @Override
-    public BotCommandTrigger getCommandTrigger() {
-        return trigger;
     }
     
     @Override

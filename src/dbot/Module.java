@@ -34,10 +34,20 @@ public abstract class Module {
     private boolean isLoaded = false;
     private int id = -1;
     
-    public Module() {
+    private final ContainerSettings containerSettings;
+    private final TokenConverter tokenConverter;
+    private final BotCommandTrigger commandTrigger;
+    
+    public Module(ContainerSettings containerSettings, TokenConverter tokenConverter, BotCommandTrigger commandTrigger) {
+        this.containerSettings = containerSettings;
+        this.tokenConverter = tokenConverter;
+        this.commandTrigger = commandTrigger;
         addons = new LinkedList<>();
     }
-    public Module(Addon... addonsList) {
+    public Module(ContainerSettings containerSettings, TokenConverter tokenConverter, BotCommandTrigger commandTrigger, Addon... addonsList) {
+        this.containerSettings = containerSettings;
+        this.tokenConverter = tokenConverter;
+        this.commandTrigger = commandTrigger;
         addons = new LinkedList<>();
         addons.addAll(Arrays.asList(addonsList));
     }
@@ -104,10 +114,16 @@ public abstract class Module {
     public abstract String getVersion();
     public abstract String getAuthor();
     public abstract long getUid();
-    
-    public abstract ContainerSettings getContainerSettings();
-    public abstract TokenConverter getTokenConverter();
-    public abstract BotCommandTrigger getCommandTrigger();
+
+    public ContainerSettings getContainerSettings() {
+        return containerSettings;
+    }
+    public TokenConverter getTokenConverter() {
+        return tokenConverter;
+    }
+    public BotCommandTrigger getCommandTrigger() {
+        return commandTrigger;
+    }
     
     public boolean onEvent(Event e) {
         if (e instanceof ReadyEvent) {

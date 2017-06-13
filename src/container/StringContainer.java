@@ -60,17 +60,6 @@ public class StringContainer extends Container<String> {
         return "";
     }
     
-    @Deprecated
-    public String getContentAsString() {
-        return ParserUtils.join(getContentAsArray(), ' ');
-    }
-    @Deprecated
-    public String getRemainingContentAsString() {
-        if (index > reverseIndex) {
-            return "";
-        }
-        return ParserUtils.join(getRemainingContentAsArray(), ' ');
-    }
     @Override
     public StringContainer clone() {
         return new StringContainer(this);

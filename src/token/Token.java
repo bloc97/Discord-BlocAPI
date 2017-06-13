@@ -42,6 +42,9 @@ public abstract class Token<T> {
     public abstract String getContentAsReadableString();
     @Override
     public String toString() {
+        return getString();
+    }
+    public String getDetailedString() {
         return  "(" + getTokenType() + ") " + getContentAsString();
     }
     

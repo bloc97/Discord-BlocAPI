@@ -139,9 +139,6 @@ public abstract class Container<T> {
     public List<T> getContent() {
         return new ArrayList(content);
     }
-    public T[] getContentAsArray() {
-        return (T[]) getContent().toArray();
-    }
     public List<T> getRemainingContent() {
         if (index > reverseIndex) {
             return new ArrayList();
@@ -151,8 +148,11 @@ public abstract class Container<T> {
         int ri = NumberUtils.boundExcludeMax(this.reverseIndex, 0, size());
         return content.subList(i, ri+1);
     }
-    public T[] getRemainingContentAsArray() {
-        return (T[]) getRemainingContent().toArray();
+    public String getRemainingContentAsString() {
+        return getRemainingContentAsString(' ');
+    }
+    public String getRemainingContentAsString(char separator) {
+        return ParserUtils.join(getRemainingContent(), separator);
     }
     public boolean hasNext() {
         return isBoundedByIndexes(index+1);

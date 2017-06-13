@@ -15,6 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import token.Token;
 
 /**
  *
@@ -27,7 +28,7 @@ public abstract class ParserUtils {
      * @param string
      * @return
      */
-    public static boolean isDecimalNumber(String string) {
+    public static boolean isNumber(String string) {
         try {
             Double.parseDouble(string);
             Long.parseLong(string);
@@ -45,7 +46,7 @@ public abstract class ParserUtils {
      * 
      * @return
      */
-    public static boolean isRadixNumber(String string, int radix) {
+    public static boolean isNumber(String string, int radix) {
         try {
             Long.parseLong(string, radix);
             return true;
@@ -337,6 +338,22 @@ public abstract class ParserUtils {
             string = string.concat(s + c);
         }
         return string.substring(0, string.length() - 1);
+    }
+    
+    public static String join(List<?> list, Character c) {
+        String string = "";
+        for (Object t : list) {
+            string = string.concat(t.toString() + c);
+        }
+        return string.substring(0, string.length() - 1);
+    }
+    
+    public static String join(List<?> list, String separator) {
+        String string = "";
+        for (Object t : list) {
+            string = string.concat(t.toString() + separator);
+        }
+        return string.substring(0, string.length() - separator.length());
     }
 
     public static String fillBegin(String string, char c, int finalLength) {

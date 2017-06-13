@@ -5,6 +5,7 @@
  */
 package dbot;
 
+import container.ContainerSettings;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -16,6 +17,7 @@ import modules.Help;
 import sx.blah.discord.api.events.Event;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
+import token.TokenConverter;
 
 /**
  *
@@ -28,10 +30,10 @@ public class ModuleLoader {
     
     private int currentIdIndex = 0;
     
-    public ModuleLoader(Module... modulesList) {
+    public ModuleLoader(ContainerSettings containerSettings, TokenConverter tokenConverter, BotCommandTrigger commandTrigger, Module... modulesList) {
         modules = new LinkedHashSet<>();
         disabledModules = new HashSet<>();
-        add(new Help());
+        add(new Help(containerSettings, tokenConverter, commandTrigger));
         
         for (Module module : modulesList) {
             add(module);

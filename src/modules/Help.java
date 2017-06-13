@@ -36,8 +36,8 @@ public class Help extends Module {
         public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader);
     }
     
-    public Help() {
-        super(new modules.help.Help(), new Commands(), new Modules());
+    public Help(ContainerSettings containerSettings, TokenConverter tokenConverter, BotCommandTrigger commandTrigger) {
+        super(containerSettings, tokenConverter, commandTrigger, new modules.help.Help(), new Commands(), new Modules());
     }
 
     @Override
@@ -78,24 +78,6 @@ public class Help extends Module {
     @Override
     public long getUid() {
         return -8461062l;
-    }
-    
-    private static final ContainerSettings settings = ContainerSettings.buildSettings("!");
-    @Override
-    public ContainerSettings getContainerSettings() {
-        return settings;
-    }
-
-    private static final TokenConverter converter = TokenConverter.getDefault();
-    @Override
-    public TokenConverter getTokenConverter() {
-        return converter;
-    }
-    
-    private static final BotCommandTrigger trigger = BotCommandTrigger.getDefault(settings);
-    @Override
-    public BotCommandTrigger getCommandTrigger() {
-        return trigger;
     }
 
     @Override
