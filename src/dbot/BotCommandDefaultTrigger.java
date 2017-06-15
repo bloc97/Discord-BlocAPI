@@ -7,7 +7,6 @@ package dbot;
 
 import container.ContainerSettings;
 import container.StringContainer;
-import container.StringFastContainer;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IUser;
@@ -47,21 +46,21 @@ public class BotCommandDefaultTrigger implements BotCommandTrigger {
     public String preParse(IDiscordClient client, MessageReceivedEvent e) {
         String rawString = e.getMessage().getContent();
         
-        
-        /*
-        
-        int symbolIndex = rawString.indexOf("!");
-        //Do more here, such as substring etc,
-        //else just start parsing
-        
-        
-        */
         rawString = rawString.trim();
-        boolean hasSymbol = false;
-        if (rawString.charAt(0) == '!') {
-            rawString = rawString.substring(1);
-            hasSymbol = true;
+        
+        StringContainer container = new StringContainer(rawString, settings);
+        
+        boolean hasPrefix = false;
+        if (!container.getPrefix().isEmpty()) {
+            rawString = rawString.substring(container.getPrefix().length());
+            hasPrefix = true;
         }
+        /*
+        boolean hasSuffix = false;
+        if (!container.getSuffix().isEmpty()) {
+            rawString = rawString.substring(0, rawString.length() - container.getSuffix().length());
+            hasSuffix = true;
+        }*/
         
         IUser botUser = client.getOurUser();
         String botName = botUser.getName();
@@ -78,9 +77,13 @@ public class BotCommandDefaultTrigger implements BotCommandTrigger {
         }
         
         rawString = rawString.trim();
-        if (!rawString.startsWith("!") && hasSymbol) { //Place back the symbol after removing user
-            rawString = "!" + rawString;
+        if (!rawString.startsWith(container.getPrefix()) && hasPrefix) { //Place back the symbol after removing user
+            rawString = container.getPrefix() + rawString;
         }
+        /*
+        if (!rawString.endsWith(container.getSuffix()) && hasSuffix) { //Place back the symbol after removing user
+            rawString = rawString + container.getSuffix();
+        }*/
         return rawString;
     }
     

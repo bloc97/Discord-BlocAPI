@@ -13,25 +13,23 @@ import sx.blah.discord.handle.obj.IMessage;
  *
  * @author bowen
  */
-public interface ExtendedTokenConverter extends TokenConverter {
-    
-    static final DefaultTokenConverter DEFAULTCONVERTER = new DefaultTokenConverter();
+public abstract class ExtendedTokenConverter extends DefaultTokenConverter {
     
     @Override
-    public default Token convertToToken(String token) {
+    public Token convertToToken(String token) {
         if (isExtendedType(token)) {
             return convertToTokenExtended(token);
         } else {
-            return DEFAULTCONVERTER.convertToToken(token);
+            return super.convertToToken(token);
         }
     }
 
     @Override
-    public default Token convertToToken(IDiscordClient client, MessageReceivedEvent event, String token) {
+    public Token convertToToken(IDiscordClient client, MessageReceivedEvent event, String token) {
         if (isExtendedType(token)) {
             return convertToTokenExtended(client, event, token);
         } else {
-            return DEFAULTCONVERTER.convertToToken(client, event, token);
+            return super.convertToToken(client, event, token);
         }
     }
     

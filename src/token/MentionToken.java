@@ -23,6 +23,8 @@ import sx.blah.discord.handle.obj.StatusType;
  */
 public class MentionToken extends Token<IDiscordObject> {
     
+    private final IDiscordClient client;
+    
     private IUser userMention;
     private IChannel channelMention;
     private IRole roleMention;
@@ -32,15 +34,17 @@ public class MentionToken extends Token<IDiscordObject> {
     
     private IChannel spokenChannel;
     
-    public MentionToken(IUser user) {
+    public MentionToken(IDiscordClient botClient, IUser user) {
         super("<@" + user.getLongID() + ">");
         userMention = user;
         isMentionEveryone = false;
         isMentionHere = false;
+        this.client = botClient;
     }
     
-    public MentionToken(IDiscordClient client, IMessage tokenMessage, String userToken) {
+    public MentionToken(IDiscordClient botClient, IMessage tokenMessage, String userToken) {
         super(userToken);
+        this.client = botClient;
         spokenChannel = tokenMessage.getChannel();
         if (userToken.startsWith("<@") && userToken.endsWith(">")) {
             long id = Long.parseLong(userToken.substring(2, userToken.length()-1));
@@ -58,6 +62,10 @@ public class MentionToken extends Token<IDiscordObject> {
         } else {
             throw new IllegalArgumentException("String cannot be parsed into a Mention Token.");
         }
+    }
+    
+    public boolean isBotMentionned() {
+        return isMentionned(client.getOurUser());
     }
     
     public boolean isMentionned(IUser user) {
