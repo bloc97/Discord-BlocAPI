@@ -17,13 +17,13 @@ import token.TokenConverter;
  *
  * @author bowen
  */
-public abstract class ModuleEmptyImpl extends Module {
+public abstract class ModuleEmptyImpl<T extends Addon> extends Module<T> {
 
     public ModuleEmptyImpl(ContainerSettings containerSettings, TokenConverter tokenConverter, BotCommandTrigger commandTrigger) {
         super(containerSettings, tokenConverter, commandTrigger);
     }
 
-    public ModuleEmptyImpl(ContainerSettings containerSettings, TokenConverter tokenConverter, BotCommandTrigger commandTrigger, Addon... addonList) {
+    public ModuleEmptyImpl(ContainerSettings containerSettings, TokenConverter tokenConverter, BotCommandTrigger commandTrigger, T... addonList) {
         super(containerSettings, tokenConverter, commandTrigger, addonList);
     }
     
@@ -62,9 +62,5 @@ public abstract class ModuleEmptyImpl extends Module {
         return false;
     }
 
-    @Override
-    public boolean onMessage(MessageReceivedEvent e, TokenAdvancedContainer container) {
-        return false;
-    }
     
 }

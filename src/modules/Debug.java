@@ -133,6 +133,11 @@ public class Debug extends Module {
         return false;
     }
 
+    @Override
+    public boolean onMessageForEachAddon(Addon addon, MessageReceivedEvent e, TokenAdvancedContainer container) {
+        return false;
+    }
+
 
     
 }

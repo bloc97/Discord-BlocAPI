@@ -64,7 +64,7 @@ public class ModuleLoader {
             disabledModules.add(module);
         }
     }
-    public Module getModuleByUid(long uid) {
+    public Module<?> getModuleByUid(long uid) {
         for (Module module : modules) {
             if (module.getUid() == uid) {
                 return module;
@@ -77,7 +77,7 @@ public class ModuleLoader {
         }
         return null;
     }
-    public Module getModuleById(long id) {
+    public Module<?> getModuleById(long id) {
         for (Module module : modules) {
             if (module.getId()== id) {
                 return module;

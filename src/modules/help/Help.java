@@ -93,7 +93,7 @@ public class Help implements Addon, HelpAddon {
     public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader) {
         
          if (e.getMessage().getContent().indexOf("--help") > 1) {
-            for (Module module : moduleLoader.getEnabledModules()) {
+            for (Module<?> module : moduleLoader.getEnabledModules()) {
                 for (Addon addon : module.getAddons()) {
                     if (addon.getTriggerDetector().check(container)) {
                         showHelp(e, addon);

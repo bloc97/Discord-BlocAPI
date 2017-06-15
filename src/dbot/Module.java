@@ -26,9 +26,9 @@ import token.TokenConverter;
  * @author bowen
  * @param <T>
  */
-public abstract class Module {
+public abstract class Module<T extends Addon> {
     private IDiscordClient botClient = null;
-    private final LinkedList<Addon> addons;
+    private final LinkedList<T> addons;
     
     private ModuleLoader moduleLoader = null;
     private boolean isLoaded = false;
@@ -44,20 +44,20 @@ public abstract class Module {
         this.commandTrigger = commandTrigger;
         addons = new LinkedList<>();
     }
-    public Module(ContainerSettings containerSettings, TokenConverter tokenConverter, BotCommandTrigger commandTrigger, Addon... addonsList) {
+    public Module(ContainerSettings containerSettings, TokenConverter tokenConverter, BotCommandTrigger commandTrigger, T... addonsList) {
         this.containerSettings = containerSettings;
         this.tokenConverter = tokenConverter;
         this.commandTrigger = commandTrigger;
         addons = new LinkedList<>();
         addons.addAll(Arrays.asList(addonsList));
     }
-    public final void add(Addon addon) {
+    public final void add(T addon) {
         if (!addons.contains(addon)) {
             addons.add(addon);
         }
     }
     
-    public List<Addon> getAddons() {
+    public List<T> getAddons() {
         return new ArrayList<>(addons);
     }
     
@@ -151,7 +151,18 @@ public abstract class Module {
     
     public abstract boolean onOtherEvent(Event e);
     public abstract boolean onReady(ReadyEvent e);
-    public abstract boolean onMessage(MessageReceivedEvent e, TokenAdvancedContainer container);
+    public boolean onMessage(MessageReceivedEvent e, TokenAdvancedContainer container) {
+        for (T addon : getAddons()) {
+            if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
+                if (onMessageForEachAddon(addon, e, container)) {
+                    return true;
+                }
+                container.reset();
+            }
+        }
+        return false;
+    };
+    public abstract boolean onMessageForEachAddon(T addon, MessageReceivedEvent e, TokenAdvancedContainer container);
     
     
 }

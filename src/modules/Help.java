@@ -30,8 +30,8 @@ import token.TokenConverter;
  * @author bowenimport token.TokenConverter;
 
  */
-public class Help extends Module {
-
+public class Help extends Module<HelpAddon> {
+    
     public interface HelpAddon extends Addon {
         public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader);
     }
@@ -89,21 +89,10 @@ public class Help extends Module {
     public boolean onReady(ReadyEvent e) {
         return false;
     }
-
+    
     @Override
-    public boolean onMessage(MessageReceivedEvent e, TokenAdvancedContainer container) {
-        
-        for (Addon addon : getAddons()) {
-            if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
-                
-                HelpAddon ha = (HelpAddon) addon;
-                if (ha.triggerMessage(getBotClient(), e, container, getModuleLoader())) {
-                    return true;
-                }
-                container.reset();
-            }
-        }
-        return false;
+    public boolean onMessageForEachAddon(HelpAddon addon, MessageReceivedEvent e, TokenAdvancedContainer container) {
+        return addon.triggerMessage(getBotClient(), e, container, getModuleLoader());
     }
     
 }

@@ -89,7 +89,7 @@ public class Commands implements Addon, HelpAddon {
             
             List<Addon> addons = new LinkedList();
             
-            for (Module module : moduleLoader.getEnabledModules()) {
+            for (Module<?> module : moduleLoader.getEnabledModules()) {
                 for (Addon addon : module.getAddons()) {
                     if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
                         addons.add(addon);
