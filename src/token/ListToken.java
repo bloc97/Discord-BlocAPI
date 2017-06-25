@@ -9,8 +9,8 @@ import helpers.ParserUtils;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
  *
@@ -34,7 +34,7 @@ public class ListToken extends Token<List<Token>> {
         
     }
     
-    public ListToken(IDiscordClient client, MessageReceivedEvent event, String rawString, TokenConverter converter, char[] separators) {
+    public ListToken(JDA client, MessageReceivedEvent event, String rawString, TokenConverter converter, char[] separators) {
         super(rawString);
         if (!isType(rawString)) {
             throw new IllegalArgumentException("Cannot parse string into a ListToken");

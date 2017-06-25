@@ -6,8 +6,8 @@
 package dbot;
 
 import container.ContainerSettings;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import token.DefaultTokenConverter;
 
 /**
@@ -15,8 +15,8 @@ import token.DefaultTokenConverter;
  * @author bowen
  */
 public interface BotCommandTrigger {
-    public boolean isMessageTrigger(IDiscordClient client, MessageReceivedEvent e);
-    public String preParse(IDiscordClient client, MessageReceivedEvent e);
+    public boolean isMessageTrigger(JDA client, MessageReceivedEvent e);
+    public String preParse(JDA client, MessageReceivedEvent e);
     
     public static BotCommandTrigger getDefault(ContainerSettings settings) {
         return new BotCommandDefaultTrigger(settings);

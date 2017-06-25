@@ -9,8 +9,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import token.TokenConverter;
 
 /**
@@ -37,11 +37,11 @@ public class TokenAdvancedContainer extends TokenContainer<StringAdvancedContain
         }
     }
     
-    public TokenAdvancedContainer(IDiscordClient client, MessageReceivedEvent event, StringAdvancedContainer container) {
+    public TokenAdvancedContainer(JDA client, MessageReceivedEvent event, StringAdvancedContainer container) {
         this(client, event, container, TokenConverter.getDefault());
     }
     
-    public TokenAdvancedContainer(IDiscordClient client, MessageReceivedEvent event, StringAdvancedContainer container, TokenConverter converter) {
+    public TokenAdvancedContainer(JDA client, MessageReceivedEvent event, StringAdvancedContainer container, TokenConverter converter) {
         super(client, event, container, converter);
         
         flags = container.getFlags();

@@ -5,8 +5,9 @@
  */
 package token;
 
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+
 
 /**
  *
@@ -26,7 +27,7 @@ public class DefaultTokenConverter implements TokenConverter {
     }
 
     @Override
-    public Token convertToToken(IDiscordClient client, MessageReceivedEvent event, String token) {
+    public Token convertToToken(JDA client, MessageReceivedEvent event, String token) {
         if (ListToken.isType(token)) {
             return new ListToken(token, this, new char[] {','});
         } else if (DateToken.isType(token)) {

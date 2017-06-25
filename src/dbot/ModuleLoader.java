@@ -14,16 +14,16 @@ import java.util.List;
 import java.util.Set;
 import modules.Debug;
 import modules.Help;
-import sx.blah.discord.api.events.Event;
-import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
+import net.dv8tion.jda.core.events.Event;
+import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import token.TokenConverter;
 
 /**
  *
  * @author bowen
  */
-public class ModuleLoader {
+public class ModuleLoader extends ListenerAdapter {
     
     private final Set<Module> modules;
     private final Set<Module> disabledModules;
@@ -107,8 +107,8 @@ public class ModuleLoader {
         return new ArrayList<>(list);
     }
     
-    @EventSubscriber
-    public void onEvent(Event e) {
+    @Override
+    public void onGenericEvent(Event e) {
         
         LinkedList<Module> erronousModules = null;
         

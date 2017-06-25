@@ -11,10 +11,13 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import sx.blah.discord.api.ClientBuilder;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.EventDispatcher;
-import sx.blah.discord.util.DiscordException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.security.auth.login.LoginException;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 /**
  *
@@ -35,26 +38,15 @@ public abstract class BotBuilder {
             return;
         }
         
-        IDiscordClient bot = createClient(dApiKey, true);
         
-        EventDispatcher botDispatcher = bot.getDispatcher();
-        botDispatcher.registerListener(moduleLoader);
-        
-    }
-    
-    public static IDiscordClient createClient(String token, boolean login) { // Returns a new instance of the Discord client
-        ClientBuilder clientBuilder = new ClientBuilder(); // Creates the ClientBuilder instance
-        clientBuilder.withToken(token); // Adds the login info to the builder
         try {
-            if (login) {
-                return clientBuilder.login(); // Creates the client instance and logs the client in
-            } else {
-                return clientBuilder.build(); // Creates the client instance but it doesn't log the client in yet, you would have to call client.login() yourself
-            }
-        } catch (DiscordException e) { // This is thrown if there was a problem building the client
-            //e.printStackTrace();
-            System.out.println(e);
-            return null;
+            JDA bot = new JDABuilder(AccountType.CLIENT)
+                    .setToken(dApiKey)
+                    .addEventListener(moduleLoader)
+                    .buildBlocking();
+        } catch (LoginException | IllegalArgumentException | InterruptedException | RateLimitedException ex) {
+            Logger.getLogger(BotBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
 }

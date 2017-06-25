@@ -6,55 +6,59 @@
 package token;
 
 import java.util.List;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.IShard;
-import sx.blah.discord.api.internal.ShardImpl;
-import sx.blah.discord.handle.impl.obj.User;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IDiscordObject;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IRole;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.handle.obj.StatusType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.OnlineStatus;
+import net.dv8tion.jda.core.entities.Channel;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.IMentionable;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.PrivateChannel;
+import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.User;
 
 /**
  *
  * @author bowen
  */
-public class MentionToken extends Token<IDiscordObject> {
+public class MentionToken extends Token<IMentionable> {
     
-    private final IDiscordClient client;
+    private final JDA client;
     
-    private IUser userMention;
-    private IChannel channelMention;
-    private IRole roleMention;
+    private User userMention;
+    private TextChannel channelMention;
+    private Role roleMention;
     
     private boolean isMentionEveryone;
     private boolean isMentionHere;
     
-    private IChannel spokenChannel;
+    private PrivateChannel privateChannel;
+    private TextChannel textChannel;
     
-    public MentionToken(IDiscordClient botClient, IUser user) {
-        super("<@" + user.getLongID() + ">");
+    public MentionToken(JDA botClient, User user) {
+        super("<@" + user.getId()+ ">");
         userMention = user;
         isMentionEveryone = false;
         isMentionHere = false;
         this.client = botClient;
     }
     
-    public MentionToken(IDiscordClient botClient, IMessage tokenMessage, String userToken) {
+    public MentionToken(JDA botClient, Message tokenMessage, String userToken) {
         super(userToken);
         this.client = botClient;
-        spokenChannel = tokenMessage.getChannel();
+        privateChannel = tokenMessage.getPrivateChannel();
+        textChannel = tokenMessage.getTextChannel();
         if (userToken.startsWith("<@") && userToken.endsWith(">")) {
             long id = Long.parseLong(userToken.substring(2, userToken.length()-1));
-            userMention = client.fetchUser(id);
+            userMention = client.getUserById(id);
         } else if (userToken.startsWith("<@&") && userToken.endsWith(">")) {
             long id = Long.parseLong(userToken.substring(3, userToken.length()-1));
-            roleMention = client.getRoleByID(id);
+            roleMention = client.getRoleById(id);
         } else if (userToken.startsWith("<#") && userToken.endsWith(">")) {
             long id = Long.parseLong(userToken.substring(2, userToken.length()-1));
-            channelMention = client.getChannelByID(id);
+            channelMention = client.getTextChannelById(id);
         } else if (userToken.equals("@everyone")) {
             isMentionEveryone = true;
         } else if (userToken.equals("@here")) {
@@ -65,18 +69,31 @@ public class MentionToken extends Token<IDiscordObject> {
     }
     
     public boolean isBotMentionned() {
-        return isMentionned(client.getOurUser());
+        return isMentionned(client.getSelfUser());
     }
     
-    public boolean isMentionned(IUser user) {
+    public boolean isMentionned(User user) {
         if (isMentionEveryone) {
-            if (spokenChannel.getUsersHere().contains(user)) { //Gets all users, even those offline
-                return true;
+            if (privateChannel != null) {
+                return (privateChannel.getUser().equals(user));
+            }
+            if (textChannel != null) {
+                for (Member member : textChannel.getMembers()) {
+                    if (member.getUser().equals(user)) {
+                        return true;
+                    }
+                }
             }
         } else if (isMentionHere) {
-            if (spokenChannel.getUsersHere().contains(user)) {
-                if (user.getPresence().getStatus() == StatusType.ONLINE) {
-                    return true;
+            if (privateChannel != null) {
+                List<Guild> mutualGuilds = user.getMutualGuilds();
+                return (privateChannel.getUser().equals(user) && !mutualGuilds.isEmpty() && user.getMutualGuilds().get(0).getMember(user).getOnlineStatus() == OnlineStatus.ONLINE);
+            }
+            if (textChannel != null) {
+                for (Member member : textChannel.getMembers()) {
+                    if (member.getUser().equals(user) && member.getOnlineStatus() == OnlineStatus.ONLINE) {
+                        return true;
+                    }
                 }
             }
         } else if (userMention != null) {
@@ -84,14 +101,16 @@ public class MentionToken extends Token<IDiscordObject> {
                 return true;
             }
         } else if (roleMention != null) {
-            if (spokenChannel.getGuild().getRolesForUser(user).contains(roleMention)) {
-                return true;
+            if (textChannel != null) {
+                if (textChannel.getGuild().getMember(user).getRoles().contains(roleMention)) {
+                    return true;
+                }
             }
         }
         return false;
     }
     
-    public boolean isMentionned(IChannel channel) {
+    public boolean isMentionned(Channel channel) {
         if (channelMention != null) {
             if (channelMention.equals(channel)) {
                 return true;
@@ -100,7 +119,7 @@ public class MentionToken extends Token<IDiscordObject> {
         return false;
     }
     
-    public boolean isMentionned(IRole role) {
+    public boolean isMentionned(Role role) {
         if (roleMention != null) {
             if (roleMention.equals(role)) {
                 return true;
@@ -110,7 +129,7 @@ public class MentionToken extends Token<IDiscordObject> {
     }
 
     @Override
-    public IDiscordObject getContent() {
+    public IMentionable getContent() {
         if (userMention != null) {
             return userMention;
         } else if (roleMention != null) {
@@ -118,25 +137,10 @@ public class MentionToken extends Token<IDiscordObject> {
         } else if (channelMention != null) {
             return channelMention;
         } else {
-            return new IDiscordObject() {
+            return new IMentionable() {
                 @Override
-                public IDiscordClient getClient() {
-                    return null;
-                }
-
-                @Override
-                public IShard getShard() {
-                    return null;
-                }
-
-                @Override
-                public IDiscordObject copy() {
-                    return this;
-                }
-
-                @Override
-                public long getLongID() {
-                    return 0;
+                public String getAsMention() {
+                    return "Not a Mention.";
                 }
             };
         }
@@ -145,11 +149,11 @@ public class MentionToken extends Token<IDiscordObject> {
     @Override
     public String getContentAsString() {
         if (userMention != null) {
-            return "<@" + userMention.getLongID() + ">";
+            return "<@" + userMention.getId()+ ">";
         } else if (roleMention != null) {
-            return "<@&" + roleMention.getLongID() + ">";
+            return "<@&" + roleMention.getId()+ ">";
         } else if (channelMention != null) {
-            return "<#" + channelMention.getLongID() + ">";
+            return "<#" + channelMention.getId()+ ">";
         } else if (isMentionEveryone) {
             return "@everyone";
         } else if (isMentionHere) {
@@ -162,11 +166,11 @@ public class MentionToken extends Token<IDiscordObject> {
     @Override
     public String getContentAsReadableString() {
         if (userMention != null) {
-            return userMention.mention();
+            return userMention.getAsMention();
         } else if (roleMention != null) {
-            return roleMention.mention();
+            return roleMention.getAsMention();
         } else if (channelMention != null) {
-            return channelMention.mention();
+            return channelMention.getAsMention();
         } else if (isMentionEveryone) {
             return "@everyone";
         } else if (isMentionHere) {

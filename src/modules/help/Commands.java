@@ -19,14 +19,8 @@ import helpers.NumberUtils;
 import java.util.LinkedList;
 import java.util.List;
 import modules.Help.HelpAddon;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.Event;
-import sx.blah.discord.api.internal.json.objects.EmbedObject;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import token.NumberToken;
 import token.StringToken;
 import token.Token;
@@ -80,7 +74,7 @@ public class Commands implements Addon, HelpAddon {
     }
     
     @Override
-    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader) {
+    public boolean triggerMessage(JDA client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader) {
         
         if (container.getAsString().equalsIgnoreCase("commands")) {
             container.next();

@@ -6,9 +6,10 @@
 package addon;
 
 import container.detector.TokenDetectorContainer;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.core.entities.Channel;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
  *
@@ -68,7 +69,7 @@ public interface Addon {
      * @param guild
      * @return
      */
-    public boolean hasPermissions(IUser user, IChannel channel, IGuild guild);
+    public boolean hasPermissions(MessageReceivedEvent e);
     
     
 }

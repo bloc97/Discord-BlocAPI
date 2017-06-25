@@ -7,9 +7,8 @@ package container;
 
 import java.util.LinkedList;
 import java.util.List;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IMessage;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import token.DefaultTokenConverter;
 import token.NumberToken;
 import token.StringToken;
@@ -30,7 +29,7 @@ public class TokenContainer<T extends StringContainer> extends Container<Token<?
     public TokenContainer(T container) {
         this(container, TokenConverter.getDefault());
     }
-    public TokenContainer(IDiscordClient client, MessageReceivedEvent event, T container) {
+    public TokenContainer(JDA client, MessageReceivedEvent event, T container) {
         this(client, event, container, TokenConverter.getDefault());
     }
     public TokenContainer(T container, TokenConverter converter) {
@@ -46,7 +45,7 @@ public class TokenContainer<T extends StringContainer> extends Container<Token<?
         setContent(tokenContent);
     }
     
-    public TokenContainer(IDiscordClient client, MessageReceivedEvent event, T container, TokenConverter converter) {
+    public TokenContainer(JDA client, MessageReceivedEvent event, T container, TokenConverter converter) {
         super(container.getRawString(), container.getTrimmedString(), container.getPrefix(), container.getSuffix());
         this.container = container;
         this.tokenConverter = converter;

@@ -5,8 +5,8 @@
  */
 package container;
 
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import token.TokenConverter;
 
 /**
@@ -19,7 +19,7 @@ public class ParameterTokenContainer extends TokenContainer {
         super(container, converter);
     }
     
-    public ParameterTokenContainer(IDiscordClient client, MessageReceivedEvent event, ParameterStringContainer container, TokenConverter converter) {
+    public ParameterTokenContainer(JDA client, MessageReceivedEvent event, ParameterStringContainer container, TokenConverter converter) {
         super(client, event, container, converter);
     }
     

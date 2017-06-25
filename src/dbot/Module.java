@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.Event;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.events.Event;
+import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import token.TokenConverter;
 
 /**
@@ -27,7 +27,7 @@ import token.TokenConverter;
  * @param <T>
  */
 public abstract class Module<T extends Addon> {
-    private IDiscordClient botClient = null;
+    private JDA botClient = null;
     private final LinkedList<T> addons;
     
     private ModuleLoader moduleLoader = null;
@@ -61,7 +61,7 @@ public abstract class Module<T extends Addon> {
         return new ArrayList<>(addons);
     }
     
-    public IDiscordClient getBotClient() {
+    public JDA getBotClient() {
         return botClient;
     }
     
@@ -144,7 +144,7 @@ public abstract class Module<T extends Addon> {
     };
     
     public void ready(ReadyEvent e) {
-        botClient = e.getClient();
+        botClient = e.getJDA();
         System.out.println("Module [" + getShortName() + "] Ready.");
         onReady(e);
     }
@@ -153,7 +153,7 @@ public abstract class Module<T extends Addon> {
     public abstract boolean onReady(ReadyEvent e);
     public boolean onMessage(MessageReceivedEvent e, TokenAdvancedContainer container) {
         for (T addon : getAddons()) {
-            if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
+            if (addon.hasPermissions(e)) {
                 if (onMessageForEachAddon(addon, e, container)) {
                     return true;
                 }

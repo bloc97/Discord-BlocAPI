@@ -14,13 +14,9 @@ import container.detector.TokenTypeDetector;
 import dbot.BotCommandTrigger;
 import dbot.Module;
 import helpers.ColourUtils;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.Event;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.core.events.Event;
+import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import token.TokenConverter;
 
 /**
@@ -67,7 +63,7 @@ public class Debug extends Module {
             }
 
             @Override
-            public boolean hasPermissions(IUser user, IChannel channel, IGuild guild) {
+            public boolean hasPermissions(MessageReceivedEvent e) {
                 return true;
             }
 

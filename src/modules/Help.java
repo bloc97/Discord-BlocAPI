@@ -18,10 +18,10 @@ import dbot.ModuleLoader;
 import modules.Help.HelpAddon;
 import modules.help.Commands;
 import modules.help.Modules;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.Event;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.events.Event;
+import net.dv8tion.jda.core.events.ReadyEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import token.DefaultTokenConverter;
 import token.TokenConverter;
 
@@ -33,7 +33,7 @@ import token.TokenConverter;
 public class Help extends Module<HelpAddon> {
     
     public interface HelpAddon extends Addon {
-        public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader);
+        public boolean triggerMessage(JDA client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader);
     }
     
     public Help(ContainerSettings containerSettings, TokenConverter tokenConverter, BotCommandTrigger commandTrigger) {

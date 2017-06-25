@@ -5,9 +5,9 @@
  */
 package token;
 
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IMessage;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+
 
 /**
  *
@@ -25,7 +25,7 @@ public abstract class ExtendedTokenConverter extends DefaultTokenConverter {
     }
 
     @Override
-    public Token convertToToken(IDiscordClient client, MessageReceivedEvent event, String token) {
+    public Token convertToToken(JDA client, MessageReceivedEvent event, String token) {
         if (isExtendedType(token)) {
             return convertToTokenExtended(client, event, token);
         } else {
@@ -35,5 +35,5 @@ public abstract class ExtendedTokenConverter extends DefaultTokenConverter {
     
     public abstract boolean isExtendedType(String token);
     public abstract Token convertToTokenExtended(String token);
-    public abstract Token convertToTokenExtended(IDiscordClient client, MessageReceivedEvent event, String token);
+    public abstract Token convertToTokenExtended(JDA client, MessageReceivedEvent event, String token);
 }

@@ -7,9 +7,10 @@ package dbot;
 
 import container.ContainerSettings;
 import container.StringContainer;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
  *
@@ -25,25 +26,25 @@ public class BotCommandDefaultTrigger implements BotCommandTrigger {
     
     
     @Override
-    public boolean isMessageTrigger(IDiscordClient client, MessageReceivedEvent e) {
+    public boolean isMessageTrigger(JDA client, MessageReceivedEvent e) {
         if (e.getAuthor().isBot()) {
             return false;
         }
-        if (e.getChannel().isPrivate()) {
+        if (e.getChannelType() == ChannelType.PRIVATE) {
             return true;
         }
         
         String rawString = e.getMessage().getContent();
         StringContainer container = new StringContainer(rawString, settings);
-        String botName = client.getOurUser().getName();
-        String botNick = client.getOurUser().getDisplayName(e.getGuild());
-        String botMention = "<@" + client.getOurUser().getLongID() + ">";
+        String botName = client.getSelfUser().getName();
+        String botNick = e.getGuild().getSelfMember().getEffectiveName();
+        String botMention = "<@" + client.getSelfUser().getId()+ ">";
         return (container.get().equalsIgnoreCase(botName) || container.get().equalsIgnoreCase(botNick) || container.get().equals(botMention));
 
     }
     
     @Override
-    public String preParse(IDiscordClient client, MessageReceivedEvent e) {
+    public String preParse(JDA client, MessageReceivedEvent e) {
         String rawString = e.getMessage().getContent();
         
         rawString = rawString.trim();
@@ -62,10 +63,10 @@ public class BotCommandDefaultTrigger implements BotCommandTrigger {
             hasSuffix = true;
         }*/
         
-        IUser botUser = client.getOurUser();
+        User botUser = client.getSelfUser();
         String botName = botUser.getName();
-        String botNick = botUser.getDisplayName(e.getGuild());
-        String botMention = "<@" + client.getOurUser().getLongID() + ">";
+        String botNick = e.getGuild().getSelfMember().getEffectiveName();
+        String botMention = "<@" + client.getSelfUser().getId()+ ">";
         
         rawString = rawString.trim();
         if (rawString.toLowerCase().startsWith(botName.toLowerCase())) {
