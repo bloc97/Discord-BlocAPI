@@ -37,7 +37,7 @@ public class BotCommandDefaultTrigger implements BotCommandTrigger {
         String rawString = e.getMessage().getContent();
         StringContainer container = new StringContainer(rawString, settings);
         String botName = client.getSelfUser().getName();
-        String botNick = e.getGuild().getSelfMember().getEffectiveName();
+        String botNick = (e.getChannelType() == ChannelType.PRIVATE) ? botName : e.getGuild().getSelfMember().getEffectiveName();
         String botMention = "<@" + client.getSelfUser().getId()+ ">";
         return (container.get().equalsIgnoreCase(botName) || container.get().equalsIgnoreCase(botNick) || container.get().equals(botMention));
 
@@ -65,7 +65,7 @@ public class BotCommandDefaultTrigger implements BotCommandTrigger {
         
         User botUser = client.getSelfUser();
         String botName = botUser.getName();
-        String botNick = e.getGuild().getSelfMember().getEffectiveName();
+        String botNick = (e.getChannelType() == ChannelType.PRIVATE) ? botName : e.getGuild().getSelfMember().getEffectiveName();
         String botMention = "<@" + client.getSelfUser().getId()+ ">";
         
         rawString = rawString.trim();

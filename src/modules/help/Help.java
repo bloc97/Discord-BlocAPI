@@ -14,17 +14,12 @@ import container.detector.TokenStringDetector;
 import dbot.Module;
 import dbot.ModuleLoader;
 import helpers.ParserUtils;
+import java.awt.Color;
 import modules.Help.HelpAddon;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.Event;
-import sx.blah.discord.api.internal.json.objects.EmbedObject;
-import sx.blah.discord.api.internal.json.objects.EmbedObject.EmbedFieldObject;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.RequestBuffer;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
  *
@@ -65,7 +60,7 @@ public class Help implements Addon, HelpAddon {
     }
 
     @Override
-    public boolean hasPermissions(IUser user, IChannel channel, IGuild guild) {
+    public boolean hasPermissions(MessageReceivedEvent e) {
         return true;
     }
     
@@ -78,19 +73,18 @@ public class Help implements Addon, HelpAddon {
     
     public static void showHelp(MessageReceivedEvent e, Addon addon) {
         
-        EmbedObject eo = new EmbedObject();
-        String finalString = "*" + addon.getName() + "*\n\n" + addon.getFullHelp();
-        EmbedFieldObject fo = new EmbedFieldObject("Help", finalString, false);
-        eo.fields = new EmbedFieldObject[] {fo};
-        eo.color = addon.getColour();
+        EmbedBuilder eb = new EmbedBuilder();
         
-        RequestBuffer.request(() -> {
-            return e.getAuthor().getOrCreatePMChannel().sendMessage(eo);
-        }).get();
+        String finalString = "*" + addon.getName() + "*\n\n" + addon.getFullHelp();
+        
+        eb.addField("Help", finalString, false);
+        eb.setColor(new Color(addon.getColour()));
+        
+        e.getChannel().sendMessage(eb.build()).queue();
     }
     
     @Override
-    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader) {
+    public boolean triggerMessage(JDA client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader) {
         
          if (e.getMessage().getContent().indexOf("--help") > 1) {
             for (Module<?> module : moduleLoader.getEnabledModules()) {
@@ -105,8 +99,9 @@ public class Help implements Addon, HelpAddon {
         }
         
         if (container.getAsString().equalsIgnoreCase("help")) {
-            IUser bot = client.getOurUser();
-            EmbedObject eo = new EmbedObject();
+            User bot = client.getSelfUser();
+            EmbedBuilder eb = new EmbedBuilder();
+            
             //eo.author = new EmbedObject.AuthorObject(bot.getName(), "https://github.com/bloc97/Discord-BlocAPI", bot.getAvatarURL(), null);
             //eo.title = "Help";
             
@@ -115,14 +110,12 @@ public class Help implements Addon, HelpAddon {
                 finalString += addon.getShortHelp()+ "\n";
             }
             
-            EmbedFieldObject fo = new EmbedFieldObject("Help", finalString, false);
+            eb.addField("Help", finalString, false);
+            eb.setColor(new Color(getColour()));
             
-            eo.fields = new EmbedFieldObject[] {fo};
-            eo.color = getColour();
-            
-            RequestBuffer.request(() -> {
-                return e.getAuthor().getOrCreatePMChannel().sendMessage(eo);
-            }).get();
+            e.getAuthor().openPrivateChannel().queue((channel) -> {
+                channel.sendMessage(eb.build()).queue();
+            });
             
             return true;
         } else {

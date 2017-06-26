@@ -45,23 +45,23 @@ public class MentionToken extends Token<IMentionable> {
         this.client = botClient;
     }
     
-    public MentionToken(JDA botClient, Message tokenMessage, String userToken) {
-        super(userToken);
+    public MentionToken(JDA botClient, Message tokenMessage, String mention) {
+        super(mention);
         this.client = botClient;
         privateChannel = tokenMessage.getPrivateChannel();
         textChannel = tokenMessage.getTextChannel();
-        if (userToken.startsWith("<@") && userToken.endsWith(">")) {
-            long id = Long.parseLong(userToken.substring(2, userToken.length()-1));
+        if (mention.startsWith("<@") && mention.endsWith(">")) {
+            long id = Long.parseLong(mention.substring(2, mention.length()-1));
             userMention = client.getUserById(id);
-        } else if (userToken.startsWith("<@&") && userToken.endsWith(">")) {
-            long id = Long.parseLong(userToken.substring(3, userToken.length()-1));
+        } else if (mention.startsWith("<@&") && mention.endsWith(">")) {
+            long id = Long.parseLong(mention.substring(3, mention.length()-1));
             roleMention = client.getRoleById(id);
-        } else if (userToken.startsWith("<#") && userToken.endsWith(">")) {
-            long id = Long.parseLong(userToken.substring(2, userToken.length()-1));
+        } else if (mention.startsWith("<#") && mention.endsWith(">")) {
+            long id = Long.parseLong(mention.substring(2, mention.length()-1));
             channelMention = client.getTextChannelById(id);
-        } else if (userToken.equals("@everyone")) {
+        } else if (mention.equals("@everyone")) {
             isMentionEveryone = true;
-        } else if (userToken.equals("@here")) {
+        } else if (mention.equals("@here")) {
             isMentionHere = true;
         } else {
             throw new IllegalArgumentException("String cannot be parsed into a Mention Token.");

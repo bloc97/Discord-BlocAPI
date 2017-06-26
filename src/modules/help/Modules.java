@@ -15,13 +15,8 @@ import dbot.Module;
 import dbot.ModuleLoader;
 import helpers.ParserUtils;
 import modules.Help.HelpAddon;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.Event;
-import sx.blah.discord.handle.impl.events.ReadyEvent;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IUser;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
  *
@@ -61,7 +56,7 @@ public class Modules implements Addon, HelpAddon {
     }
 
     @Override
-    public boolean hasPermissions(IUser user, IChannel channel, IGuild guild) {
+    public boolean hasPermissions(MessageReceivedEvent e) {
         return true;
     }
     
@@ -73,14 +68,17 @@ public class Modules implements Addon, HelpAddon {
     }
 
     @Override
-    public boolean triggerMessage(IDiscordClient client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader) {
+    public boolean triggerMessage(JDA client, MessageReceivedEvent e, TokenAdvancedContainer container, ModuleLoader moduleLoader) {
         
         if (container.getAsString().equalsIgnoreCase("modules")) {
             String finalString = "";
             for (Module module : moduleLoader.getEnabledModules()) {
                 finalString += module.getShortName() + " v" + module.getVersion() + " (by " + module.getAuthor() + ") - " + module.getShortDescription()+ "\n";
             }
-            e.getChannel().sendMessage("```\n" + finalString + "```");
+            final String s = "```\n" + finalString + "```";
+            e.getAuthor().openPrivateChannel().queue((channel) -> {
+                channel.sendMessage(s).queue();
+            });
             return true;
         } else {
             return false;

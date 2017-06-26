@@ -6,24 +6,20 @@
 package modules.help;
 
 import addon.Addon;
-import container.StringFastContainer;
 import container.TokenAdvancedContainer;
-import container.TokenContainer;
-import container.detector.TokenContentDetector;
 import container.detector.TokenDetectorContainer;
 import container.detector.TokenStringDetector;
 import dbot.Module;
 import dbot.ModuleLoader;
-import helpers.ParserUtils;
 import helpers.NumberUtils;
+import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 import modules.Help.HelpAddon;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import token.NumberToken;
-import token.StringToken;
-import token.Token;
 
 /**
  *
@@ -62,7 +58,7 @@ public class Commands implements Addon, HelpAddon {
     }
 
     @Override
-    public boolean hasPermissions(IUser user, IChannel channel, IGuild guild) {
+    public boolean hasPermissions(MessageReceivedEvent e) {
         return true;
     }
 
@@ -79,18 +75,17 @@ public class Commands implements Addon, HelpAddon {
         if (container.getAsString().equalsIgnoreCase("commands")) {
             container.next();
             
-            EmbedObject eo = new EmbedObject();
+            EmbedBuilder eb = new EmbedBuilder();
             
             List<Addon> addons = new LinkedList();
             
             for (Module<?> module : moduleLoader.getEnabledModules()) {
                 for (Addon addon : module.getAddons()) {
-                    if (addon.hasPermissions(e.getAuthor(), e.getChannel(), e.getGuild())) {
+                    if (addon.hasPermissions(e)) {
                         addons.add(addon);
                     }
                 }
             }
-            
             
             int pageNum = container.getAsNumber().intValue();
             int commandsPerPage = 8;
@@ -103,7 +98,7 @@ public class Commands implements Addon, HelpAddon {
             
             
             String finalString = "";
-            if (e.getChannel().isPrivate()) {
+            if (e.getChannelType() == ChannelType.PRIVATE) {
                 finalString += "*[in PM]*\n";
             } else {
                 finalString += "*[in #" + e.getChannel().getName() + "]*\n";
@@ -112,14 +107,13 @@ public class Commands implements Addon, HelpAddon {
                 finalString += addon.getShortHelp() + "\n";
             }
             
-            EmbedObject.EmbedFieldObject fo = new EmbedObject.EmbedFieldObject("Available Commands", finalString, false);
+            eb.addField("Available Commands", finalString, false);
+            eb.setColor(new Color(getColour()));
+            eb.setFooter("Page " + pageNum + "/" + pageTotal, null);
             
-            eo.fields = new EmbedObject.EmbedFieldObject[] {fo};
-            eo.color = getColour();
-            
-            eo.footer = new EmbedObject.FooterObject("Page " + pageNum + "/" + pageTotal, null, null);
-            
-            e.getAuthor().getOrCreatePMChannel().sendMessage(eo);
+            e.getAuthor().openPrivateChannel().queue((channel) -> {
+                channel.sendMessage(eb.build()).queue();
+            });
             return true;
         } else {
             return false;

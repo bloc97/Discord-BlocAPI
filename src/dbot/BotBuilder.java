@@ -40,7 +40,7 @@ public abstract class BotBuilder {
         
         
         try {
-            JDA bot = new JDABuilder(AccountType.CLIENT)
+            JDA bot = new JDABuilder(AccountType.BOT)
                     .setToken(dApiKey)
                     .addEventListener(moduleLoader)
                     .buildBlocking();
