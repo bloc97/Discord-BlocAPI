@@ -80,7 +80,7 @@ public class Help implements Addon, HelpAddon {
         eb.addField("Help", finalString, false);
         eb.setColor(new Color(addon.getColour()));
         
-        e.getChannel().sendMessage(eb.build()).queue();
+        e.getAuthor().openPrivateChannel().complete().sendMessage(eb.build()).queue();
     }
     
     @Override

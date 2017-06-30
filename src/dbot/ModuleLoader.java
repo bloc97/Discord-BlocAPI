@@ -110,7 +110,7 @@ public class ModuleLoader extends ListenerAdapter {
     @Override
     public void onGenericEvent(Event e) {
         
-        LinkedList<Module> erronousModules = null;
+        //LinkedList<Module> erronousModules = null;
         
         for (Module module : modules) {
             try {
@@ -118,20 +118,22 @@ public class ModuleLoader extends ListenerAdapter {
                     break;
                 }
             } catch (Exception ex) {
+                /*
                 if (erronousModules == null) {
                     erronousModules = new LinkedList<>();
                 }
-                erronousModules.add(module);
+                erronousModules.add(module);*/
                 ex.printStackTrace();
-                System.out.println(module.getShortName() + " Module Error: " + ex);
+                //System.out.println(module.getShortName() + " Module Error: " + ex);
             }
         }
         
+        /*
         if (erronousModules != null) {
             erronousModules.forEach((module) -> {
                 disable(module);
             });
-        }
+        }*/
 
         if (e instanceof ReadyEvent) {
             System.out.println("Bot Ready.");

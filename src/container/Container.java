@@ -152,7 +152,12 @@ public abstract class Container<T> {
         return getRemainingContentAsString(' ');
     }
     public String getRemainingContentAsString(char separator) {
-        return ParserUtils.join(getRemainingContent(), separator);
+        List<T> remainingContent = getRemainingContent();
+        if (!remainingContent.isEmpty()) {
+            return ParserUtils.join(getRemainingContent(), separator);
+        } else {
+            return "";
+        }
     }
     public boolean hasNext() {
         return isBoundedByIndexes(index+1);

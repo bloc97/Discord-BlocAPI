@@ -337,6 +337,9 @@ public abstract class ParserUtils {
         for (String s : array) {
             string = string.concat(s + c);
         }
+        if (string.isEmpty()) {
+            return "";
+        }
         return string.substring(0, string.length() - 1);
     }
     
@@ -345,6 +348,9 @@ public abstract class ParserUtils {
         for (Object t : list) {
             string = string.concat(t.toString() + c);
         }
+        if (string.isEmpty()) {
+            return "";
+        }
         return string.substring(0, string.length() - 1);
     }
     
@@ -352,6 +358,9 @@ public abstract class ParserUtils {
         String string = "";
         for (Object t : list) {
             string = string.concat(t.toString() + separator);
+        }
+        if (string.isEmpty()) {
+            return "";
         }
         return string.substring(0, string.length() - separator.length());
     }
@@ -374,6 +383,9 @@ public abstract class ParserUtils {
 
     public static String formatNounOutput(String s) {
         //Formats a unformatted noun for output (capitalize first letter)
+        if (s.isEmpty()) {
+            return "";
+        }
         return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
     }
 
